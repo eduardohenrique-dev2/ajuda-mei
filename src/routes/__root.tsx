@@ -79,15 +79,15 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "description", content: "Atendimento inteligente para o Microempreendedor Individual (MEI)." },
       { name: "author", content: "Sala do Empreendedor" },
       { property: "og:title", content: "Sala do Empreendedor" },
-      { property: "og:description", content: "Atendimento inteligente para o MEI." },
+      { property: "og:description", content: "Atendimento inteligente para o Microempreendedor Individual (MEI)." },
       { property: "og:type", content: "website" },
+      { name: "twitter:title", content: "Sala do Empreendedor" },
+      { name: "twitter:description", content: "Atendimento inteligente para o Microempreendedor Individual (MEI)." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/9b3a6cdb-ea9c-4b18-a57e-068364cd2fac/id-preview-08aa7609--b9e4bb3e-d0a0-4f99-9cb0-eaab29cc94cd.lovable.app-1780203522335.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/9b3a6cdb-ea9c-4b18-a57e-068364cd2fac/id-preview-08aa7609--b9e4bb3e-d0a0-4f99-9cb0-eaab29cc94cd.lovable.app-1780203522335.png" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
-    links: [
-      { rel: "stylesheet", href: appCss },
-      { rel: "manifest", href: "/manifest.webmanifest" },
-      { rel: "icon", type: "image/svg+xml", href: "/icon-192.svg" },
-      { rel: "apple-touch-icon", href: "/icon-192.svg" },
-    ],
+    links: [{ rel: "stylesheet", href: appCss }],
   }),
   shellComponent: RootShell,
   component: RootComponent,
@@ -111,27 +111,12 @@ function AuthSync() {
   const router = useRouter();
   const queryClient = useQueryClient();
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
-      if (event === "SIGNED_OUT") {
-        queryClient.cancelQueries();
-        queryClient.clear();
-      } else {
-        queryClient.invalidateQueries();
-      }
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(() => {
       router.invalidate();
+      queryClient.invalidateQueries();
     });
     return () => subscription.unsubscribe();
   }, [router, queryClient]);
-  return null;
-}
-
-function ServiceWorkerRegister() {
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    if (!("serviceWorker" in navigator)) return;
-    if (import.meta.env.DEV) return;
-    navigator.serviceWorker.register("/sw.js").catch(() => {});
-  }, []);
   return null;
 }
 
@@ -142,7 +127,6 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <AuthSync />
-        <ServiceWorkerRegister />
         <Outlet />
         <Toaster richColors theme="dark" position="top-right" />
       </AuthProvider>
