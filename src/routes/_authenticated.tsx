@@ -125,12 +125,20 @@ function AuthenticatedLayout() {
 
   const NavContent = ({ onItemClick }: { onItemClick?: () => void }) => (
     <>
-      <NavList items={meiNav} pathname={pathname} onItemClick={onItemClick} />
+      <NavList items={meiNav} pathname={pathname} label="MEI" onItemClick={onItemClick} />
       {isStaff && (
         <NavList
-          items={staffNavWithAdmin}
+          items={staffNav}
           pathname={pathname}
           label="Atendimento"
+          onItemClick={onItemClick}
+        />
+      )}
+      {isAdmin && (
+        <NavList
+          items={adminNav}
+          pathname={pathname}
+          label="Administração"
           onItemClick={onItemClick}
         />
       )}
