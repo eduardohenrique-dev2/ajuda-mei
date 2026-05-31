@@ -82,7 +82,7 @@ function StaffTicketsPage() {
               {data!.map(t => (
                 <tr key={t.id} className="border-t border-border hover:bg-card/40">
                   <td className="px-4 py-3 font-mono text-xs">
-                    <Link to={"/staff/tickets/$id" as any} params={{ id: t.id }} className="text-primary hover:underline">
+                    <Link to={"/staff/tickets/$id" as any} params={{ id: t.id } as any} className="text-primary hover:underline">
                       {t.protocolo}
                     </Link>
                   </td>
