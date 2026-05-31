@@ -29,7 +29,7 @@ function ForgotPasswordPage() {
   };
 
   return (
-    <div className="grid min-h-screen place-items-center bg-background px-4">
+    <div className="grid min-h-dvh place-items-center bg-background px-4">
       <div className="w-full max-w-sm rounded-xl border border-border bg-card p-6 shadow-sm">
         <Link to="/login" className="text-sm text-muted-foreground hover:text-foreground">← Voltar ao login</Link>
         <h1 className="mt-3 text-2xl font-semibold tracking-tight">Recuperar senha</h1>

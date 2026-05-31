@@ -53,7 +53,7 @@ function ApiDocsPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-dvh bg-white">
       <div id="swagger-ui" />
     </div>
   );
