@@ -26,7 +26,7 @@ export const listAllTickets = createServerFn({ method: "POST" })
       .select("id, protocolo, titulo, descricao, categoria, status, prioridade, canal, mei_id, atendente_id, criado_em, atualizado_em")
       .order("criado_em", { ascending: false })
       .limit(200);
-    if (data.status && data.status !== "todos") query = query.eq("status", data.status);
+    if (data.status && data.status !== "todos") query = query.eq("status", data.status as any);
     if (data.q) query = query.or(`titulo.ilike.%${data.q}%,protocolo.ilike.%${data.q}%`);
     const { data: rows, error } = await query;
     if (error) throw new Error(error.message);
