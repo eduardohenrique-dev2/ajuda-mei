@@ -35,7 +35,6 @@ export function maskPhoneBR(v: string): string {
 export function isValidCNPJ(value: string): boolean {
   const cnpj = onlyDigits(value);
   if (cnpj.length !== 14) return false;
-  // Rejeita sequências repetidas (00000000000000, 11111111111111, ...)
   if (/^(\d)\1{13}$/.test(cnpj)) return false;
 
   const calcDigit = (base: string, weights: number[]): number => {
@@ -49,6 +48,22 @@ export function isValidCNPJ(value: string): boolean {
   const d1 = calcDigit(cnpj.slice(0, 12), w1);
   const d2 = calcDigit(cnpj.slice(0, 12) + d1, w2);
   return d1 === parseInt(cnpj[12], 10) && d2 === parseInt(cnpj[13], 10);
+}
+
+// Algoritmo oficial de dígitos verificadores do CPF
+export function isValidCPF(value: string): boolean {
+  const cpf = onlyDigits(value);
+  if (cpf.length !== 11) return false;
+  if (/^(\d)\1{10}$/.test(cpf)) return false;
+  const calc = (slice: string, factor: number): number => {
+    let sum = 0;
+    for (let i = 0; i < slice.length; i++) sum += parseInt(slice[i], 10) * (factor - i);
+    const r = (sum * 10) % 11;
+    return r === 10 ? 0 : r;
+  };
+  const d1 = calc(cpf.slice(0, 9), 10);
+  const d2 = calc(cpf.slice(0, 10), 11);
+  return d1 === parseInt(cpf[9], 10) && d2 === parseInt(cpf[10], 10);
 }
 
 export function isValidPhoneBR(value: string): boolean {
