@@ -61,11 +61,17 @@ export const getTicketDetail = createServerFn({ method: "POST" })
 
 export const replyTicket = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: { ticket_id: string; mensagem: string; interna?: boolean }) =>
+  .inputValidator((d: { ticket_id: string; mensagem: string; interna?: boolean; anexos?: { path: string; name: string; size: number; mime?: string }[] }) =>
     z.object({
       ticket_id: z.string().uuid(),
       mensagem: z.string().trim().min(1).max(5000),
       interna: z.boolean().default(false),
+      anexos: z.array(z.object({
+        path: z.string().min(3).max(500),
+        name: z.string().min(1).max(200),
+        size: z.number().nonnegative(),
+        mime: z.string().max(120).optional(),
+      })).max(10).default([]),
     }).parse(d)
   )
   .handler(async ({ data, context }) => {
@@ -76,6 +82,7 @@ export const replyTicket = createServerFn({ method: "POST" })
       papel: "atendente",
       mensagem: data.mensagem,
       interna: data.interna,
+      anexos: data.anexos,
     });
     if (error) throw new Error(error.message);
 
