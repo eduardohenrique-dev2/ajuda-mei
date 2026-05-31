@@ -82,7 +82,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:description", content: "Atendimento inteligente para o MEI." },
       { property: "og:type", content: "website" },
     ],
-    links: [{ rel: "stylesheet", href: appCss }],
+    links: [
+      { rel: "stylesheet", href: appCss },
+      { rel: "manifest", href: "/manifest.webmanifest" },
+      { rel: "icon", type: "image/svg+xml", href: "/icon-192.svg" },
+      { rel: "apple-touch-icon", href: "/icon-192.svg" },
+    ],
   }),
   shellComponent: RootShell,
   component: RootComponent,
@@ -115,6 +120,16 @@ function AuthSync() {
   return null;
 }
 
+function ServiceWorkerRegister() {
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (!("serviceWorker" in navigator)) return;
+    if (import.meta.env.DEV) return;
+    navigator.serviceWorker.register("/sw.js").catch(() => {});
+  }, []);
+  return null;
+}
+
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
@@ -122,6 +137,7 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <AuthSync />
+        <ServiceWorkerRegister />
         <Outlet />
         <Toaster richColors theme="dark" position="top-right" />
       </AuthProvider>

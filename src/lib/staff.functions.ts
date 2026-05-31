@@ -37,6 +37,7 @@ export const getTicketDetail = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: { id: string }) => z.object({ id: z.string().uuid() }).parse(d))
   .handler(async ({ data, context }) => {
+    await assertStaff(context.supabase, context.userId);
     const { data: ticket, error } = await context.supabase
       .from("tickets")
       .select("id, protocolo, titulo, descricao, categoria, status, prioridade, canal, mei_id, atendente_id, criado_em, atualizado_em")
@@ -55,6 +56,15 @@ export const getTicketDetail = createServerFn({ method: "POST" })
       const { data: prof } = await context.supabase
         .from("profiles").select("nome, email, cnpj").eq("id", ticket.mei_id).maybeSingle();
       mei = prof ?? null;
+
+      // LGPD: registra acesso a dados pessoais do MEI
+      await context.supabase.from("audit_log").insert({
+        actor_id: context.userId,
+        acao: "view_mei_personal_data",
+        recurso: "tickets",
+        recurso_id: data.id,
+        detalhes: { mei_id: ticket.mei_id, protocolo: ticket.protocolo },
+      });
     }
     return { ticket, messages: messages ?? [], mei };
   });
