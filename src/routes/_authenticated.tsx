@@ -35,7 +35,11 @@ const staffNav: NavItem[] = [
   { to: "/staff/documentos", label: "Revisar documentos", icon: FolderArchive },
   { to: "/staff/solutions", label: "Gerir soluções", icon: BookOpen },
   { to: "/staff/sectors", label: "Setores", icon: MapPin },
+];
+
+const adminNav: NavItem[] = [
   { to: "/staff/analytics", label: "Analytics", icon: BarChart3 },
+  { to: "/staff/audit", label: "Auditoria LGPD", icon: FileSearch },
 ];
 
 function NavList({
