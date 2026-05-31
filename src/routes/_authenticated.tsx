@@ -38,6 +38,7 @@ const staffNav: NavItem[] = [
 ];
 
 const adminNav: NavItem[] = [
+  { to: "/staff/bi", label: "BI Operacional", icon: BarChart3 },
   { to: "/staff/analytics", label: "Analytics", icon: BarChart3 },
   { to: "/staff/audit", label: "Auditoria LGPD", icon: FileSearch },
 ];

@@ -31,6 +31,7 @@ import { Route as AuthenticatedStaffTicketsRouteImport } from './routes/_authent
 import { Route as AuthenticatedStaffSolutionsRouteImport } from './routes/_authenticated/staff.solutions'
 import { Route as AuthenticatedStaffSectorsRouteImport } from './routes/_authenticated/staff.sectors'
 import { Route as AuthenticatedStaffDocumentosRouteImport } from './routes/_authenticated/staff.documentos'
+import { Route as AuthenticatedStaffBiRouteImport } from './routes/_authenticated/staff.bi'
 import { Route as AuthenticatedStaffAuditRouteImport } from './routes/_authenticated/staff.audit'
 import { Route as AuthenticatedStaffAnalyticsRouteImport } from './routes/_authenticated/staff.analytics'
 import { Route as AuthenticatedStaffTicketsIdRouteImport } from './routes/_authenticated/staff.tickets.$id'
@@ -148,6 +149,11 @@ const AuthenticatedStaffDocumentosRoute =
     path: '/documentos',
     getParentRoute: () => AuthenticatedStaffRoute,
   } as any)
+const AuthenticatedStaffBiRoute = AuthenticatedStaffBiRouteImport.update({
+  id: '/bi',
+  path: '/bi',
+  getParentRoute: () => AuthenticatedStaffRoute,
+} as any)
 const AuthenticatedStaffAuditRoute = AuthenticatedStaffAuditRouteImport.update({
   id: '/audit',
   path: '/audit',
@@ -183,6 +189,7 @@ export interface FileRoutesByFullPath {
   '/docs/api': typeof DocsApiRoute
   '/staff/analytics': typeof AuthenticatedStaffAnalyticsRoute
   '/staff/audit': typeof AuthenticatedStaffAuditRoute
+  '/staff/bi': typeof AuthenticatedStaffBiRoute
   '/staff/documentos': typeof AuthenticatedStaffDocumentosRoute
   '/staff/sectors': typeof AuthenticatedStaffSectorsRoute
   '/staff/solutions': typeof AuthenticatedStaffSolutionsRoute
@@ -209,6 +216,7 @@ export interface FileRoutesByTo {
   '/docs/api': typeof DocsApiRoute
   '/staff/analytics': typeof AuthenticatedStaffAnalyticsRoute
   '/staff/audit': typeof AuthenticatedStaffAuditRoute
+  '/staff/bi': typeof AuthenticatedStaffBiRoute
   '/staff/documentos': typeof AuthenticatedStaffDocumentosRoute
   '/staff/sectors': typeof AuthenticatedStaffSectorsRoute
   '/staff/solutions': typeof AuthenticatedStaffSolutionsRoute
@@ -237,6 +245,7 @@ export interface FileRoutesById {
   '/docs/api': typeof DocsApiRoute
   '/_authenticated/staff/analytics': typeof AuthenticatedStaffAnalyticsRoute
   '/_authenticated/staff/audit': typeof AuthenticatedStaffAuditRoute
+  '/_authenticated/staff/bi': typeof AuthenticatedStaffBiRoute
   '/_authenticated/staff/documentos': typeof AuthenticatedStaffDocumentosRoute
   '/_authenticated/staff/sectors': typeof AuthenticatedStaffSectorsRoute
   '/_authenticated/staff/solutions': typeof AuthenticatedStaffSolutionsRoute
@@ -265,6 +274,7 @@ export interface FileRouteTypes {
     | '/docs/api'
     | '/staff/analytics'
     | '/staff/audit'
+    | '/staff/bi'
     | '/staff/documentos'
     | '/staff/sectors'
     | '/staff/solutions'
@@ -291,6 +301,7 @@ export interface FileRouteTypes {
     | '/docs/api'
     | '/staff/analytics'
     | '/staff/audit'
+    | '/staff/bi'
     | '/staff/documentos'
     | '/staff/sectors'
     | '/staff/solutions'
@@ -318,6 +329,7 @@ export interface FileRouteTypes {
     | '/docs/api'
     | '/_authenticated/staff/analytics'
     | '/_authenticated/staff/audit'
+    | '/_authenticated/staff/bi'
     | '/_authenticated/staff/documentos'
     | '/_authenticated/staff/sectors'
     | '/_authenticated/staff/solutions'
@@ -498,6 +510,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedStaffDocumentosRouteImport
       parentRoute: typeof AuthenticatedStaffRoute
     }
+    '/_authenticated/staff/bi': {
+      id: '/_authenticated/staff/bi'
+      path: '/bi'
+      fullPath: '/staff/bi'
+      preLoaderRoute: typeof AuthenticatedStaffBiRouteImport
+      parentRoute: typeof AuthenticatedStaffRoute
+    }
     '/_authenticated/staff/audit': {
       id: '/_authenticated/staff/audit'
       path: '/audit'
@@ -539,6 +558,7 @@ const AuthenticatedStaffTicketsRouteWithChildren =
 interface AuthenticatedStaffRouteChildren {
   AuthenticatedStaffAnalyticsRoute: typeof AuthenticatedStaffAnalyticsRoute
   AuthenticatedStaffAuditRoute: typeof AuthenticatedStaffAuditRoute
+  AuthenticatedStaffBiRoute: typeof AuthenticatedStaffBiRoute
   AuthenticatedStaffDocumentosRoute: typeof AuthenticatedStaffDocumentosRoute
   AuthenticatedStaffSectorsRoute: typeof AuthenticatedStaffSectorsRoute
   AuthenticatedStaffSolutionsRoute: typeof AuthenticatedStaffSolutionsRoute
@@ -548,6 +568,7 @@ interface AuthenticatedStaffRouteChildren {
 const AuthenticatedStaffRouteChildren: AuthenticatedStaffRouteChildren = {
   AuthenticatedStaffAnalyticsRoute: AuthenticatedStaffAnalyticsRoute,
   AuthenticatedStaffAuditRoute: AuthenticatedStaffAuditRoute,
+  AuthenticatedStaffBiRoute: AuthenticatedStaffBiRoute,
   AuthenticatedStaffDocumentosRoute: AuthenticatedStaffDocumentosRoute,
   AuthenticatedStaffSectorsRoute: AuthenticatedStaffSectorsRoute,
   AuthenticatedStaffSolutionsRoute: AuthenticatedStaffSolutionsRoute,
@@ -606,3 +627,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
