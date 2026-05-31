@@ -14,6 +14,63 @@ export type Database = {
   }
   public: {
     Tables: {
+      audit_log: {
+        Row: {
+          acao: string
+          actor_id: string | null
+          criado_em: string
+          detalhes: Json
+          id: string
+          recurso: string
+          recurso_id: string | null
+        }
+        Insert: {
+          acao: string
+          actor_id?: string | null
+          criado_em?: string
+          detalhes?: Json
+          id?: string
+          recurso: string
+          recurso_id?: string | null
+        }
+        Update: {
+          acao?: string
+          actor_id?: string | null
+          criado_em?: string
+          detalhes?: Json
+          id?: string
+          recurso?: string
+          recurso_id?: string | null
+        }
+        Relationships: []
+      }
+      avaliacoes: {
+        Row: {
+          comentario: string | null
+          criado_em: string
+          id: string
+          mei_id: string
+          nota: number
+          ticket_id: string
+        }
+        Insert: {
+          comentario?: string | null
+          criado_em?: string
+          id?: string
+          mei_id: string
+          nota: number
+          ticket_id: string
+        }
+        Update: {
+          comentario?: string | null
+          criado_em?: string
+          id?: string
+          mei_id?: string
+          nota?: number
+          ticket_id?: string
+        }
+        Relationships: []
+      }
       chat_history: {
         Row: {
           canal: Database["public"]["Enums"]["ticket_channel"]
@@ -320,6 +377,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      escalate_stale_tickets: { Args: never; Returns: Json }
       generate_protocolo: { Args: never; Returns: string }
       get_analytics: { Args: never; Returns: Json }
       has_role: {
