@@ -9,6 +9,8 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SolucoesRouteImport } from './routes/solucoes'
+import { Route as SetoresRouteImport } from './routes/setores'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as EsqueciSenhaRouteImport } from './routes/esqueci-senha'
@@ -31,6 +33,16 @@ import { Route as AuthenticatedStaffAuditRouteImport } from './routes/_authentic
 import { Route as AuthenticatedStaffAnalyticsRouteImport } from './routes/_authenticated/staff.analytics'
 import { Route as AuthenticatedStaffTicketsIdRouteImport } from './routes/_authenticated/staff.tickets.$id'
 
+const SolucoesRoute = SolucoesRouteImport.update({
+  id: '/solucoes',
+  path: '/solucoes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SetoresRoute = SetoresRouteImport.update({
+  id: '/setores',
+  path: '/setores',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
   path: '/reset-password',
@@ -147,6 +159,8 @@ export interface FileRoutesByFullPath {
   '/esqueci-senha': typeof EsqueciSenhaRoute
   '/login': typeof LoginRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/setores': typeof SetoresRoute
+  '/solucoes': typeof SolucoesRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/perfil': typeof AuthenticatedPerfilRoute
   '/solutions': typeof AuthenticatedSolutionsRoute
@@ -169,6 +183,8 @@ export interface FileRoutesByTo {
   '/esqueci-senha': typeof EsqueciSenhaRoute
   '/login': typeof LoginRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/setores': typeof SetoresRoute
+  '/solucoes': typeof SolucoesRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/perfil': typeof AuthenticatedPerfilRoute
   '/solutions': typeof AuthenticatedSolutionsRoute
@@ -193,6 +209,8 @@ export interface FileRoutesById {
   '/esqueci-senha': typeof EsqueciSenhaRoute
   '/login': typeof LoginRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/setores': typeof SetoresRoute
+  '/solucoes': typeof SolucoesRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/perfil': typeof AuthenticatedPerfilRoute
   '/_authenticated/solutions': typeof AuthenticatedSolutionsRoute
@@ -217,6 +235,8 @@ export interface FileRouteTypes {
     | '/esqueci-senha'
     | '/login'
     | '/reset-password'
+    | '/setores'
+    | '/solucoes'
     | '/dashboard'
     | '/perfil'
     | '/solutions'
@@ -239,6 +259,8 @@ export interface FileRouteTypes {
     | '/esqueci-senha'
     | '/login'
     | '/reset-password'
+    | '/setores'
+    | '/solucoes'
     | '/dashboard'
     | '/perfil'
     | '/solutions'
@@ -262,6 +284,8 @@ export interface FileRouteTypes {
     | '/esqueci-senha'
     | '/login'
     | '/reset-password'
+    | '/setores'
+    | '/solucoes'
     | '/_authenticated/dashboard'
     | '/_authenticated/perfil'
     | '/_authenticated/solutions'
@@ -286,6 +310,8 @@ export interface RootRouteChildren {
   EsqueciSenhaRoute: typeof EsqueciSenhaRoute
   LoginRoute: typeof LoginRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
+  SetoresRoute: typeof SetoresRoute
+  SolucoesRoute: typeof SolucoesRoute
   DocsApiRoute: typeof DocsApiRoute
   ApiPublicHealthRoute: typeof ApiPublicHealthRoute
   ApiPublicMetricsRoute: typeof ApiPublicMetricsRoute
@@ -293,6 +319,20 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/solucoes': {
+      id: '/solucoes'
+      path: '/solucoes'
+      fullPath: '/solucoes'
+      preLoaderRoute: typeof SolucoesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/setores': {
+      id: '/setores'
+      path: '/setores'
+      fullPath: '/setores'
+      preLoaderRoute: typeof SetoresRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/reset-password': {
       id: '/reset-password'
       path: '/reset-password'
@@ -514,6 +554,8 @@ const rootRouteChildren: RootRouteChildren = {
   EsqueciSenhaRoute: EsqueciSenhaRoute,
   LoginRoute: LoginRoute,
   ResetPasswordRoute: ResetPasswordRoute,
+  SetoresRoute: SetoresRoute,
+  SolucoesRoute: SolucoesRoute,
   DocsApiRoute: DocsApiRoute,
   ApiPublicHealthRoute: ApiPublicHealthRoute,
   ApiPublicMetricsRoute: ApiPublicMetricsRoute,
