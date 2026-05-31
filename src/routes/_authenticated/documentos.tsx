@@ -28,7 +28,7 @@ type DocRow = {
   created_at: string;
 };
 
-const statusIcon: Record<string, React.ReactNode> = {
+const statusIcon: Record<string, ReactNode> = {
   uploaded: <Clock className="h-3 w-3" aria-hidden="true" />,
   processing: <Loader2 className="h-3 w-3 animate-spin" aria-hidden="true" />,
   pending_review: <Clock className="h-3 w-3" aria-hidden="true" />,
