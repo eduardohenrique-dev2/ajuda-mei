@@ -22,6 +22,7 @@ function getOrCreateSession(): string {
 type EventName =
   | "page_view" | "search" | "chat_message" | "link_click" | "solution_opened"
   | "sector_opened" | "ticket_created" | "protocol_created" | "document_upload"
+  | "document_reviewed" | "ocr_completed" | "document_approved" | "document_rejected"
   | "resolved" | "abandoned" | "signup" | "login";
 
 /**

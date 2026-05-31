@@ -22,6 +22,7 @@ import { Route as AuthenticatedTicketsRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedStaffRouteImport } from './routes/_authenticated/staff'
 import { Route as AuthenticatedSolutionsRouteImport } from './routes/_authenticated/solutions'
 import { Route as AuthenticatedPerfilRouteImport } from './routes/_authenticated/perfil'
+import { Route as AuthenticatedDocumentosRouteImport } from './routes/_authenticated/documentos'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as ApiPublicMetricsRouteImport } from './routes/api/public/metrics'
 import { Route as ApiPublicHealthRouteImport } from './routes/api/public/health'
@@ -29,6 +30,7 @@ import { Route as AuthenticatedTicketsIdRouteImport } from './routes/_authentica
 import { Route as AuthenticatedStaffTicketsRouteImport } from './routes/_authenticated/staff.tickets'
 import { Route as AuthenticatedStaffSolutionsRouteImport } from './routes/_authenticated/staff.solutions'
 import { Route as AuthenticatedStaffSectorsRouteImport } from './routes/_authenticated/staff.sectors'
+import { Route as AuthenticatedStaffDocumentosRouteImport } from './routes/_authenticated/staff.documentos'
 import { Route as AuthenticatedStaffAuditRouteImport } from './routes/_authenticated/staff.audit'
 import { Route as AuthenticatedStaffAnalyticsRouteImport } from './routes/_authenticated/staff.analytics'
 import { Route as AuthenticatedStaffTicketsIdRouteImport } from './routes/_authenticated/staff.tickets.$id'
@@ -97,6 +99,11 @@ const AuthenticatedPerfilRoute = AuthenticatedPerfilRouteImport.update({
   path: '/perfil',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedDocumentosRoute = AuthenticatedDocumentosRouteImport.update({
+  id: '/documentos',
+  path: '/documentos',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -135,6 +142,12 @@ const AuthenticatedStaffSectorsRoute =
     path: '/sectors',
     getParentRoute: () => AuthenticatedStaffRoute,
   } as any)
+const AuthenticatedStaffDocumentosRoute =
+  AuthenticatedStaffDocumentosRouteImport.update({
+    id: '/documentos',
+    path: '/documentos',
+    getParentRoute: () => AuthenticatedStaffRoute,
+  } as any)
 const AuthenticatedStaffAuditRoute = AuthenticatedStaffAuditRouteImport.update({
   id: '/audit',
   path: '/audit',
@@ -162,6 +175,7 @@ export interface FileRoutesByFullPath {
   '/setores': typeof SetoresRoute
   '/solucoes': typeof SolucoesRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/documentos': typeof AuthenticatedDocumentosRoute
   '/perfil': typeof AuthenticatedPerfilRoute
   '/solutions': typeof AuthenticatedSolutionsRoute
   '/staff': typeof AuthenticatedStaffRouteWithChildren
@@ -169,6 +183,7 @@ export interface FileRoutesByFullPath {
   '/docs/api': typeof DocsApiRoute
   '/staff/analytics': typeof AuthenticatedStaffAnalyticsRoute
   '/staff/audit': typeof AuthenticatedStaffAuditRoute
+  '/staff/documentos': typeof AuthenticatedStaffDocumentosRoute
   '/staff/sectors': typeof AuthenticatedStaffSectorsRoute
   '/staff/solutions': typeof AuthenticatedStaffSolutionsRoute
   '/staff/tickets': typeof AuthenticatedStaffTicketsRouteWithChildren
@@ -186,6 +201,7 @@ export interface FileRoutesByTo {
   '/setores': typeof SetoresRoute
   '/solucoes': typeof SolucoesRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/documentos': typeof AuthenticatedDocumentosRoute
   '/perfil': typeof AuthenticatedPerfilRoute
   '/solutions': typeof AuthenticatedSolutionsRoute
   '/staff': typeof AuthenticatedStaffRouteWithChildren
@@ -193,6 +209,7 @@ export interface FileRoutesByTo {
   '/docs/api': typeof DocsApiRoute
   '/staff/analytics': typeof AuthenticatedStaffAnalyticsRoute
   '/staff/audit': typeof AuthenticatedStaffAuditRoute
+  '/staff/documentos': typeof AuthenticatedStaffDocumentosRoute
   '/staff/sectors': typeof AuthenticatedStaffSectorsRoute
   '/staff/solutions': typeof AuthenticatedStaffSolutionsRoute
   '/staff/tickets': typeof AuthenticatedStaffTicketsRouteWithChildren
@@ -212,6 +229,7 @@ export interface FileRoutesById {
   '/setores': typeof SetoresRoute
   '/solucoes': typeof SolucoesRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/documentos': typeof AuthenticatedDocumentosRoute
   '/_authenticated/perfil': typeof AuthenticatedPerfilRoute
   '/_authenticated/solutions': typeof AuthenticatedSolutionsRoute
   '/_authenticated/staff': typeof AuthenticatedStaffRouteWithChildren
@@ -219,6 +237,7 @@ export interface FileRoutesById {
   '/docs/api': typeof DocsApiRoute
   '/_authenticated/staff/analytics': typeof AuthenticatedStaffAnalyticsRoute
   '/_authenticated/staff/audit': typeof AuthenticatedStaffAuditRoute
+  '/_authenticated/staff/documentos': typeof AuthenticatedStaffDocumentosRoute
   '/_authenticated/staff/sectors': typeof AuthenticatedStaffSectorsRoute
   '/_authenticated/staff/solutions': typeof AuthenticatedStaffSolutionsRoute
   '/_authenticated/staff/tickets': typeof AuthenticatedStaffTicketsRouteWithChildren
@@ -238,6 +257,7 @@ export interface FileRouteTypes {
     | '/setores'
     | '/solucoes'
     | '/dashboard'
+    | '/documentos'
     | '/perfil'
     | '/solutions'
     | '/staff'
@@ -245,6 +265,7 @@ export interface FileRouteTypes {
     | '/docs/api'
     | '/staff/analytics'
     | '/staff/audit'
+    | '/staff/documentos'
     | '/staff/sectors'
     | '/staff/solutions'
     | '/staff/tickets'
@@ -262,6 +283,7 @@ export interface FileRouteTypes {
     | '/setores'
     | '/solucoes'
     | '/dashboard'
+    | '/documentos'
     | '/perfil'
     | '/solutions'
     | '/staff'
@@ -269,6 +291,7 @@ export interface FileRouteTypes {
     | '/docs/api'
     | '/staff/analytics'
     | '/staff/audit'
+    | '/staff/documentos'
     | '/staff/sectors'
     | '/staff/solutions'
     | '/staff/tickets'
@@ -287,6 +310,7 @@ export interface FileRouteTypes {
     | '/setores'
     | '/solucoes'
     | '/_authenticated/dashboard'
+    | '/_authenticated/documentos'
     | '/_authenticated/perfil'
     | '/_authenticated/solutions'
     | '/_authenticated/staff'
@@ -294,6 +318,7 @@ export interface FileRouteTypes {
     | '/docs/api'
     | '/_authenticated/staff/analytics'
     | '/_authenticated/staff/audit'
+    | '/_authenticated/staff/documentos'
     | '/_authenticated/staff/sectors'
     | '/_authenticated/staff/solutions'
     | '/_authenticated/staff/tickets'
@@ -410,6 +435,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPerfilRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/documentos': {
+      id: '/_authenticated/documentos'
+      path: '/documentos'
+      fullPath: '/documentos'
+      preLoaderRoute: typeof AuthenticatedDocumentosRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/dashboard': {
       id: '/_authenticated/dashboard'
       path: '/dashboard'
@@ -459,6 +491,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedStaffSectorsRouteImport
       parentRoute: typeof AuthenticatedStaffRoute
     }
+    '/_authenticated/staff/documentos': {
+      id: '/_authenticated/staff/documentos'
+      path: '/documentos'
+      fullPath: '/staff/documentos'
+      preLoaderRoute: typeof AuthenticatedStaffDocumentosRouteImport
+      parentRoute: typeof AuthenticatedStaffRoute
+    }
     '/_authenticated/staff/audit': {
       id: '/_authenticated/staff/audit'
       path: '/audit'
@@ -500,6 +539,7 @@ const AuthenticatedStaffTicketsRouteWithChildren =
 interface AuthenticatedStaffRouteChildren {
   AuthenticatedStaffAnalyticsRoute: typeof AuthenticatedStaffAnalyticsRoute
   AuthenticatedStaffAuditRoute: typeof AuthenticatedStaffAuditRoute
+  AuthenticatedStaffDocumentosRoute: typeof AuthenticatedStaffDocumentosRoute
   AuthenticatedStaffSectorsRoute: typeof AuthenticatedStaffSectorsRoute
   AuthenticatedStaffSolutionsRoute: typeof AuthenticatedStaffSolutionsRoute
   AuthenticatedStaffTicketsRoute: typeof AuthenticatedStaffTicketsRouteWithChildren
@@ -508,6 +548,7 @@ interface AuthenticatedStaffRouteChildren {
 const AuthenticatedStaffRouteChildren: AuthenticatedStaffRouteChildren = {
   AuthenticatedStaffAnalyticsRoute: AuthenticatedStaffAnalyticsRoute,
   AuthenticatedStaffAuditRoute: AuthenticatedStaffAuditRoute,
+  AuthenticatedStaffDocumentosRoute: AuthenticatedStaffDocumentosRoute,
   AuthenticatedStaffSectorsRoute: AuthenticatedStaffSectorsRoute,
   AuthenticatedStaffSolutionsRoute: AuthenticatedStaffSolutionsRoute,
   AuthenticatedStaffTicketsRoute: AuthenticatedStaffTicketsRouteWithChildren,
@@ -529,6 +570,7 @@ const AuthenticatedTicketsRouteWithChildren =
 
 interface AuthenticatedRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedDocumentosRoute: typeof AuthenticatedDocumentosRoute
   AuthenticatedPerfilRoute: typeof AuthenticatedPerfilRoute
   AuthenticatedSolutionsRoute: typeof AuthenticatedSolutionsRoute
   AuthenticatedStaffRoute: typeof AuthenticatedStaffRouteWithChildren
@@ -537,6 +579,7 @@ interface AuthenticatedRouteChildren {
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedDocumentosRoute: AuthenticatedDocumentosRoute,
   AuthenticatedPerfilRoute: AuthenticatedPerfilRoute,
   AuthenticatedSolutionsRoute: AuthenticatedSolutionsRoute,
   AuthenticatedStaffRoute: AuthenticatedStaffRouteWithChildren,

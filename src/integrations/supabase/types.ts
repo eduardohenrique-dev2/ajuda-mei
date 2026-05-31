@@ -145,6 +145,80 @@ export type Database = {
           },
         ]
       }
+      documents: {
+        Row: {
+          created_at: string
+          extracted_fields: Json
+          file_name: string
+          file_path: string
+          file_size_bytes: number
+          id: string
+          mime_type: string
+          ocr_text: string | null
+          parent_document_id: string | null
+          protocol_id: string | null
+          rejection_reason: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: Database["public"]["Enums"]["document_status"]
+          ticket_id: string | null
+          tipo: string
+          updated_at: string
+          user_id: string
+          version: number
+        }
+        Insert: {
+          created_at?: string
+          extracted_fields?: Json
+          file_name: string
+          file_path: string
+          file_size_bytes?: number
+          id?: string
+          mime_type: string
+          ocr_text?: string | null
+          parent_document_id?: string | null
+          protocol_id?: string | null
+          rejection_reason?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: Database["public"]["Enums"]["document_status"]
+          ticket_id?: string | null
+          tipo?: string
+          updated_at?: string
+          user_id: string
+          version?: number
+        }
+        Update: {
+          created_at?: string
+          extracted_fields?: Json
+          file_name?: string
+          file_path?: string
+          file_size_bytes?: number
+          id?: string
+          mime_type?: string
+          ocr_text?: string | null
+          parent_document_id?: string | null
+          protocol_id?: string | null
+          rejection_reason?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: Database["public"]["Enums"]["document_status"]
+          ticket_id?: string | null
+          tipo?: string
+          updated_at?: string
+          user_id?: string
+          version?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "documents_parent_document_id_fkey"
+            columns: ["parent_document_id"]
+            isOneToOne: false
+            referencedRelation: "documents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           atualizado_em: string
@@ -419,6 +493,7 @@ export type Database = {
       escalate_stale_tickets: { Args: never; Returns: Json }
       generate_protocolo: { Args: never; Returns: string }
       get_analytics: { Args: never; Returns: Json }
+      get_document_stats: { Args: { _days?: number }; Returns: Json }
       get_event_stats: { Args: { _days?: number }; Returns: Json }
       has_role: {
         Args: {
@@ -447,6 +522,12 @@ export type Database = {
     }
     Enums: {
       app_role: "mei" | "atendente" | "gestor" | "admin"
+      document_status:
+        | "uploaded"
+        | "processing"
+        | "pending_review"
+        | "approved"
+        | "rejected"
       mei_status: "pendente_validacao" | "verificado"
       solution_category:
         | "declaracao_anual"
@@ -595,6 +676,13 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["mei", "atendente", "gestor", "admin"],
+      document_status: [
+        "uploaded",
+        "processing",
+        "pending_review",
+        "approved",
+        "rejected",
+      ],
       mei_status: ["pendente_validacao", "verificado"],
       solution_category: [
         "declaracao_anual",

@@ -5,7 +5,7 @@ import { useMyRoles } from "@/lib/use-roles";
 import { supabase } from "@/integrations/supabase/client";
 import {
   LayoutDashboard, Ticket, BookOpen, LogOut, Building2, Inbox, BarChart3,
-  ShieldCheck, User, MapPin, FileSearch, Menu,
+  ShieldCheck, User, MapPin, FileSearch, Menu, FolderArchive,
 } from "lucide-react";
 import { ChatWidget } from "@/components/chat/ChatWidget";
 import { Button } from "@/components/ui/button";
@@ -27,12 +27,14 @@ type NavItem = { to: string; label: string; icon: ComponentType<{ className?: st
 const meiNav: NavItem[] = [
   { to: "/dashboard", label: "Início", icon: LayoutDashboard },
   { to: "/tickets", label: "Meus tickets", icon: Ticket },
+  { to: "/documentos", label: "Documentos", icon: FolderArchive },
   { to: "/solutions", label: "Soluções", icon: BookOpen },
   { to: "/perfil", label: "Meu perfil", icon: User },
 ];
 
 const staffNav: NavItem[] = [
   { to: "/staff/tickets", label: "Fila de tickets", icon: Inbox },
+  { to: "/staff/documentos", label: "Revisar documentos", icon: FolderArchive },
   { to: "/staff/solutions", label: "Gerir soluções", icon: BookOpen },
   { to: "/staff/sectors", label: "Setores", icon: MapPin },
   { to: "/staff/analytics", label: "Analytics", icon: BarChart3 },
