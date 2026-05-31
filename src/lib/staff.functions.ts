@@ -106,7 +106,7 @@ export const updateTicketStatus = createServerFn({ method: "POST" })
     };
     if (data.prioridade) patch.prioridade = data.prioridade;
     if (["resolvido", "encerrado"].includes(data.status)) patch.encerrado_em = new Date().toISOString();
-    const { error } = await context.supabase.from("tickets").update(patch).eq("id", data.ticket_id);
+    const { error } = await context.supabase.from("tickets").update(patch as any).eq("id", data.ticket_id);
     if (error) throw new Error(error.message);
     return { ok: true };
   });
