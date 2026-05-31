@@ -197,6 +197,7 @@ export type Database = {
       }
       ticket_messages: {
         Row: {
+          anexos: Json
           autor_id: string
           criado_em: string
           id: string
@@ -206,6 +207,7 @@ export type Database = {
           ticket_id: string
         }
         Insert: {
+          anexos?: Json
           autor_id: string
           criado_em?: string
           id?: string
@@ -215,6 +217,7 @@ export type Database = {
           ticket_id: string
         }
         Update: {
+          anexos?: Json
           autor_id?: string
           criado_em?: string
           id?: string
