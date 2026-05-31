@@ -9,6 +9,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { PublicHeader, PublicFooter } from "@/components/layout/PublicHeader";
 import { useAnalytics, usePageView } from "@/lib/use-analytics";
 import { passoText } from "@/lib/render-helpers";
+import { SolutionFilterChips, applyQuickFilter } from "@/components/solutions/SolutionFilterChips";
+import { SolutionFeedback } from "@/components/solutions/SolutionFeedback";
 
 export const Route = createFileRoute("/solucoes")({
   head: () => ({
@@ -28,22 +30,31 @@ function PublicSolutionsPage() {
   const list = useServerFn(listSolutions);
   const { data, isLoading } = useQuery({ queryKey: ["public-solutions"], queryFn: () => list() });
   const [q, setQ] = useState("");
+  const [activeFilter, setActiveFilter] = useState<string | null>(null);
 
   const filtered = useMemo(() => {
-    const all = data ?? [];
-    if (!q.trim()) return all;
-    const needle = q.trim().toLowerCase();
-    return all.filter(s =>
-      s.titulo.toLowerCase().includes(needle) ||
-      s.descricao.toLowerCase().includes(needle) ||
-      (s.tags ?? []).some((t: string) => t.toLowerCase().includes(needle))
-    );
-  }, [data, q]);
+    let all = applyQuickFilter(data ?? [], activeFilter);
+    if (q.trim()) {
+      const needle = q.trim().toLowerCase();
+      all = all.filter(s =>
+        s.titulo.toLowerCase().includes(needle) ||
+        s.descricao.toLowerCase().includes(needle) ||
+        (s.tags ?? []).some((t: string) => t.toLowerCase().includes(needle))
+      );
+    }
+    return all;
+  }, [data, q, activeFilter]);
 
   const onSearch = (v: string) => {
     setQ(v);
     if (v.length >= 3) track("search", { query: v, area: "solucoes" });
   };
+
+  const onFilter = (id: string | null) => {
+    setActiveFilter(id);
+    if (id) track("solution_filter", { filter: id, area: "solucoes" });
+  };
+
 
   return (
     <div className="flex min-h-dvh flex-col bg-background">
