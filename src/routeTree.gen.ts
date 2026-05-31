@@ -17,6 +17,10 @@ import { Route as AuthenticatedTicketsRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedStaffRouteImport } from './routes/_authenticated/staff'
 import { Route as AuthenticatedSolutionsRouteImport } from './routes/_authenticated/solutions'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedStaffTicketsRouteImport } from './routes/_authenticated/staff.tickets'
+import { Route as AuthenticatedStaffSolutionsRouteImport } from './routes/_authenticated/staff.solutions'
+import { Route as AuthenticatedStaffAnalyticsRouteImport } from './routes/_authenticated/staff.analytics'
+import { Route as AuthenticatedStaffTicketsIdRouteImport } from './routes/_authenticated/staff.tickets.$id'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
@@ -57,6 +61,30 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedStaffTicketsRoute =
+  AuthenticatedStaffTicketsRouteImport.update({
+    id: '/tickets',
+    path: '/tickets',
+    getParentRoute: () => AuthenticatedStaffRoute,
+  } as any)
+const AuthenticatedStaffSolutionsRoute =
+  AuthenticatedStaffSolutionsRouteImport.update({
+    id: '/solutions',
+    path: '/solutions',
+    getParentRoute: () => AuthenticatedStaffRoute,
+  } as any)
+const AuthenticatedStaffAnalyticsRoute =
+  AuthenticatedStaffAnalyticsRouteImport.update({
+    id: '/analytics',
+    path: '/analytics',
+    getParentRoute: () => AuthenticatedStaffRoute,
+  } as any)
+const AuthenticatedStaffTicketsIdRoute =
+  AuthenticatedStaffTicketsIdRouteImport.update({
+    id: '/$id',
+    path: '/$id',
+    getParentRoute: () => AuthenticatedStaffTicketsRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -64,8 +92,12 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/solutions': typeof AuthenticatedSolutionsRoute
-  '/staff': typeof AuthenticatedStaffRoute
+  '/staff': typeof AuthenticatedStaffRouteWithChildren
   '/tickets': typeof AuthenticatedTicketsRoute
+  '/staff/analytics': typeof AuthenticatedStaffAnalyticsRoute
+  '/staff/solutions': typeof AuthenticatedStaffSolutionsRoute
+  '/staff/tickets': typeof AuthenticatedStaffTicketsRouteWithChildren
+  '/staff/tickets/$id': typeof AuthenticatedStaffTicketsIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -73,8 +105,12 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/solutions': typeof AuthenticatedSolutionsRoute
-  '/staff': typeof AuthenticatedStaffRoute
+  '/staff': typeof AuthenticatedStaffRouteWithChildren
   '/tickets': typeof AuthenticatedTicketsRoute
+  '/staff/analytics': typeof AuthenticatedStaffAnalyticsRoute
+  '/staff/solutions': typeof AuthenticatedStaffSolutionsRoute
+  '/staff/tickets': typeof AuthenticatedStaffTicketsRouteWithChildren
+  '/staff/tickets/$id': typeof AuthenticatedStaffTicketsIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -84,8 +120,12 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/solutions': typeof AuthenticatedSolutionsRoute
-  '/_authenticated/staff': typeof AuthenticatedStaffRoute
+  '/_authenticated/staff': typeof AuthenticatedStaffRouteWithChildren
   '/_authenticated/tickets': typeof AuthenticatedTicketsRoute
+  '/_authenticated/staff/analytics': typeof AuthenticatedStaffAnalyticsRoute
+  '/_authenticated/staff/solutions': typeof AuthenticatedStaffSolutionsRoute
+  '/_authenticated/staff/tickets': typeof AuthenticatedStaffTicketsRouteWithChildren
+  '/_authenticated/staff/tickets/$id': typeof AuthenticatedStaffTicketsIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -97,6 +137,10 @@ export interface FileRouteTypes {
     | '/solutions'
     | '/staff'
     | '/tickets'
+    | '/staff/analytics'
+    | '/staff/solutions'
+    | '/staff/tickets'
+    | '/staff/tickets/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -106,6 +150,10 @@ export interface FileRouteTypes {
     | '/solutions'
     | '/staff'
     | '/tickets'
+    | '/staff/analytics'
+    | '/staff/solutions'
+    | '/staff/tickets'
+    | '/staff/tickets/$id'
   id:
     | '__root__'
     | '/'
@@ -116,6 +164,10 @@ export interface FileRouteTypes {
     | '/_authenticated/solutions'
     | '/_authenticated/staff'
     | '/_authenticated/tickets'
+    | '/_authenticated/staff/analytics'
+    | '/_authenticated/staff/solutions'
+    | '/_authenticated/staff/tickets'
+    | '/_authenticated/staff/tickets/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -183,20 +235,77 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/staff/tickets': {
+      id: '/_authenticated/staff/tickets'
+      path: '/tickets'
+      fullPath: '/staff/tickets'
+      preLoaderRoute: typeof AuthenticatedStaffTicketsRouteImport
+      parentRoute: typeof AuthenticatedStaffRoute
+    }
+    '/_authenticated/staff/solutions': {
+      id: '/_authenticated/staff/solutions'
+      path: '/solutions'
+      fullPath: '/staff/solutions'
+      preLoaderRoute: typeof AuthenticatedStaffSolutionsRouteImport
+      parentRoute: typeof AuthenticatedStaffRoute
+    }
+    '/_authenticated/staff/analytics': {
+      id: '/_authenticated/staff/analytics'
+      path: '/analytics'
+      fullPath: '/staff/analytics'
+      preLoaderRoute: typeof AuthenticatedStaffAnalyticsRouteImport
+      parentRoute: typeof AuthenticatedStaffRoute
+    }
+    '/_authenticated/staff/tickets/$id': {
+      id: '/_authenticated/staff/tickets/$id'
+      path: '/$id'
+      fullPath: '/staff/tickets/$id'
+      preLoaderRoute: typeof AuthenticatedStaffTicketsIdRouteImport
+      parentRoute: typeof AuthenticatedStaffTicketsRoute
+    }
   }
 }
+
+interface AuthenticatedStaffTicketsRouteChildren {
+  AuthenticatedStaffTicketsIdRoute: typeof AuthenticatedStaffTicketsIdRoute
+}
+
+const AuthenticatedStaffTicketsRouteChildren: AuthenticatedStaffTicketsRouteChildren =
+  {
+    AuthenticatedStaffTicketsIdRoute: AuthenticatedStaffTicketsIdRoute,
+  }
+
+const AuthenticatedStaffTicketsRouteWithChildren =
+  AuthenticatedStaffTicketsRoute._addFileChildren(
+    AuthenticatedStaffTicketsRouteChildren,
+  )
+
+interface AuthenticatedStaffRouteChildren {
+  AuthenticatedStaffAnalyticsRoute: typeof AuthenticatedStaffAnalyticsRoute
+  AuthenticatedStaffSolutionsRoute: typeof AuthenticatedStaffSolutionsRoute
+  AuthenticatedStaffTicketsRoute: typeof AuthenticatedStaffTicketsRouteWithChildren
+}
+
+const AuthenticatedStaffRouteChildren: AuthenticatedStaffRouteChildren = {
+  AuthenticatedStaffAnalyticsRoute: AuthenticatedStaffAnalyticsRoute,
+  AuthenticatedStaffSolutionsRoute: AuthenticatedStaffSolutionsRoute,
+  AuthenticatedStaffTicketsRoute: AuthenticatedStaffTicketsRouteWithChildren,
+}
+
+const AuthenticatedStaffRouteWithChildren =
+  AuthenticatedStaffRoute._addFileChildren(AuthenticatedStaffRouteChildren)
 
 interface AuthenticatedRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedSolutionsRoute: typeof AuthenticatedSolutionsRoute
-  AuthenticatedStaffRoute: typeof AuthenticatedStaffRoute
+  AuthenticatedStaffRoute: typeof AuthenticatedStaffRouteWithChildren
   AuthenticatedTicketsRoute: typeof AuthenticatedTicketsRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedSolutionsRoute: AuthenticatedSolutionsRoute,
-  AuthenticatedStaffRoute: AuthenticatedStaffRoute,
+  AuthenticatedStaffRoute: AuthenticatedStaffRouteWithChildren,
   AuthenticatedTicketsRoute: AuthenticatedTicketsRoute,
 }
 
@@ -213,3 +322,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
