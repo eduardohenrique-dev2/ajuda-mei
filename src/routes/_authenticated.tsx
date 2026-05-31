@@ -5,7 +5,7 @@ import { useMyRoles } from "@/lib/use-roles";
 import { supabase } from "@/integrations/supabase/client";
 import {
   LayoutDashboard, Ticket, BookOpen, LogOut, Building2, Inbox, BarChart3,
-  ShieldCheck, User, MapPin, FileSearch, Menu,
+  ShieldCheck, User, MapPin, FileSearch, Menu, FolderArchive,
 } from "lucide-react";
 import { ChatWidget } from "@/components/chat/ChatWidget";
 import { Button } from "@/components/ui/button";
