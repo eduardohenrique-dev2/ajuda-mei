@@ -98,7 +98,7 @@ export const updateSolution = createServerFn({ method: "POST" })
     }
     if (patch.link_oficial === "") updatePayload.link_oficial = null;
 
-    const { error } = await supabaseAdmin.from("solutions").update(updatePayload).eq("id", id);
+    const { error } = await supabaseAdmin.from("solutions").update(updatePayload as any).eq("id", id);
     if (error) throw new Error(error.message);
     return { ok: true };
   });
