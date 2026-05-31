@@ -1,7 +1,8 @@
 import { createFileRoute, Outlet, redirect, Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useAuth } from "@/lib/auth-context";
+import { useMyRoles } from "@/lib/use-roles";
 import { supabase } from "@/integrations/supabase/client";
-import { LayoutDashboard, Ticket, BookOpen, LogOut, Building2 } from "lucide-react";
+import { LayoutDashboard, Ticket, BookOpen, LogOut, Building2, Inbox, BarChart3, ShieldCheck } from "lucide-react";
 import { ChatWidget } from "@/components/chat/ChatWidget";
 import { Button } from "@/components/ui/button";
 
@@ -15,10 +16,16 @@ export const Route = createFileRoute("/_authenticated")({
   component: AuthenticatedLayout,
 });
 
-const navItems = [
+const meiNav = [
   { to: "/dashboard", label: "Início", icon: LayoutDashboard },
   { to: "/tickets", label: "Meus tickets", icon: Ticket },
   { to: "/solutions", label: "Soluções", icon: BookOpen },
+];
+
+const staffNav = [
+  { to: "/staff/tickets", label: "Fila de tickets", icon: Inbox },
+  { to: "/staff/solutions", label: "Gerir soluções", icon: BookOpen },
+  { to: "/staff/analytics", label: "Analytics", icon: BarChart3 },
 ];
 
 function AuthenticatedLayout() {
