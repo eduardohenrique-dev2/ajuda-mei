@@ -195,6 +195,36 @@ export type Database = {
           },
         ]
       }
+      ticket_messages: {
+        Row: {
+          autor_id: string
+          criado_em: string
+          id: string
+          interna: boolean
+          mensagem: string
+          papel: string
+          ticket_id: string
+        }
+        Insert: {
+          autor_id: string
+          criado_em?: string
+          id?: string
+          interna?: boolean
+          mensagem: string
+          papel: string
+          ticket_id: string
+        }
+        Update: {
+          autor_id?: string
+          criado_em?: string
+          id?: string
+          interna?: boolean
+          mensagem?: string
+          papel?: string
+          ticket_id?: string
+        }
+        Relationships: []
+      }
       tickets: {
         Row: {
           atendente_id: string | null
@@ -288,6 +318,7 @@ export type Database = {
     }
     Functions: {
       generate_protocolo: { Args: never; Returns: string }
+      get_analytics: { Args: never; Returns: Json }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
