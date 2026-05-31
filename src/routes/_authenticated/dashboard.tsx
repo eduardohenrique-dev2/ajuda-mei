@@ -2,7 +2,10 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { listMyTickets } from "@/lib/tickets.functions";
-import { Ticket, MessageCircle, BookOpen } from "lucide-react";
+import { getMyProfile } from "@/lib/profile.functions";
+import { Ticket, MessageCircle, BookOpen, Bell, FileText, Search } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
+import { usePageView } from "@/lib/use-analytics";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({ meta: [{ title: "Início — Sala do Empreendedor" }] }),
@@ -10,52 +13,70 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
 });
 
 function DashboardPage() {
+  usePageView({ area: "dashboard_mei" });
   const fetchMy = useServerFn(listMyTickets);
-  const { data: tickets, isLoading } = useQuery({
+  const fetchProfile = useServerFn(getMyProfile);
+
+  const { data: tickets, isLoading: loadingTickets } = useQuery({
     queryKey: ["my-tickets"],
     queryFn: () => fetchMy(),
   });
+  const { data: profile, isLoading: loadingProfile } = useQuery({
+    queryKey: ["my-profile"],
+    queryFn: () => fetchProfile(),
+  });
 
   const abertos = (tickets ?? []).filter(t => t.status !== "resolvido" && t.status !== "encerrado").length;
+  const aguardando = (tickets ?? []).filter(t => t.status === "aguardando_mei").length;
+  const firstName = (profile?.nome ?? "").split(" ")[0] || "empreendedor";
 
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Olá, bem-vindo de volta 👋</h1>
+        {loadingProfile ? (
+          <Skeleton className="h-8 w-64" />
+        ) : (
+          <h1 className="text-2xl font-semibold tracking-tight">Olá, {firstName} 👋</h1>
+        )}
         <p className="mt-1 text-sm text-muted-foreground">
-          Use o chat no canto inferior direito ou explore as ações abaixo.
+          Bem-vindo de volta. Veja suas pendências e atalhos abaixo.
         </p>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-3">
-        <StatCard label="Tickets em aberto" value={abertos} icon={Ticket} accent="primary" />
-        <StatCard label="Tickets totais" value={tickets?.length ?? 0} icon={Ticket} accent="info" />
-        <StatCard label="Base de soluções" value="—" icon={BookOpen} accent="warning" />
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {loadingTickets ? (
+          Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className="rounded-xl border border-border bg-card p-5">
+              <Skeleton className="h-10 w-10 rounded-lg" />
+              <Skeleton className="mt-3 h-7 w-12" />
+              <Skeleton className="mt-1 h-3 w-24" />
+            </div>
+          ))
+        ) : (
+          <>
+            <StatCard label="Aguardando você" value={aguardando} icon={Bell} accent="warning" />
+            <StatCard label="Tickets em aberto" value={abertos} icon={Ticket} accent="primary" />
+            <StatCard label="Tickets totais" value={tickets?.length ?? 0} icon={FileText} accent="info" />
+            <StatCard label="Documentos" value="—" icon={FileText} accent="muted" />
+          </>
+        )}
       </div>
 
-      <div className="grid gap-4 md:grid-cols-3">
-        <ActionCard
-          to="/tickets"
-          icon={Ticket}
-          title="Meus atendimentos"
-          desc="Veja o status e protocolo dos seus tickets."
-        />
-        <ActionCard
-          to="/solutions"
-          icon={BookOpen}
-          title="Base de soluções"
-          desc="Consulte respostas oficiais sobre DAS, declaração e mais."
-        />
-        <div className="rounded-xl border border-border bg-card p-5">
-          <div className="grid h-10 w-10 place-items-center rounded-lg bg-primary/15 text-primary">
-            <MessageCircle className="h-5 w-5" />
+      <section>
+        <h2 className="text-sm font-medium uppercase tracking-wider text-muted-foreground">Atalhos</h2>
+        <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <ActionCard to="/solucoes" icon={Search} title="Buscar solução" desc="Procedimentos oficiais." />
+          <ActionCard to="/tickets" icon={Ticket} title="Meus atendimentos" desc="Status e protocolos." />
+          <ActionCard to="/solutions" icon={BookOpen} title="Base de soluções" desc="Catálogo completo." />
+          <div className="rounded-xl border border-border bg-card p-5">
+            <div className="grid h-10 w-10 place-items-center rounded-lg bg-primary/15 text-primary">
+              <MessageCircle className="h-5 w-5" />
+            </div>
+            <h3 className="mt-3 font-medium">Abrir conversa</h3>
+            <p className="mt-1 text-sm text-muted-foreground">Toque no botão verde no canto inferior direito.</p>
           </div>
-          <h3 className="mt-3 font-medium">Abrir conversa</h3>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Toque no botão verde no canto inferior direito para falar com o assistente.
-          </p>
         </div>
-      </div>
+      </section>
 
       <section>
         <div className="flex items-center justify-between">
@@ -63,11 +84,21 @@ function DashboardPage() {
           <Link to="/tickets" className="text-sm text-primary hover:underline">Ver todos</Link>
         </div>
         <div className="mt-3 overflow-hidden rounded-xl border border-border">
-          {isLoading ? (
-            <div className="p-6 text-sm text-muted-foreground">Carregando...</div>
+          {loadingTickets ? (
+            <div className="space-y-2 p-4">
+              {Array.from({ length: 3 }).map((_, i) => (
+                <Skeleton key={i} className="h-10 w-full" />
+              ))}
+            </div>
           ) : (tickets ?? []).length === 0 ? (
-            <div className="p-6 text-sm text-muted-foreground">
-              Você ainda não abriu nenhum atendimento. Use o chat para começar.
+            <div className="p-8 text-center">
+              <Ticket className="mx-auto h-8 w-8 text-muted-foreground" />
+              <p className="mt-3 text-sm text-muted-foreground">
+                Você ainda não abriu nenhum atendimento.
+              </p>
+              <p className="mt-1 text-xs text-muted-foreground">
+                Use o chat no canto inferior direito para começar.
+              </p>
             </div>
           ) : (
             <table className="w-full text-sm">
@@ -97,12 +128,13 @@ function DashboardPage() {
 
 function StatCard({ label, value, icon: Icon, accent }: {
   label: string; value: number | string; icon: React.ComponentType<{ className?: string }>;
-  accent: "primary" | "info" | "warning";
+  accent: "primary" | "info" | "warning" | "muted";
 }) {
   const map = {
     primary: "bg-primary/15 text-primary",
     info: "bg-info/15 text-info",
     warning: "bg-warning/15 text-warning",
+    muted: "bg-muted text-muted-foreground",
   };
   return (
     <div className="rounded-xl border border-border bg-card p-5">
