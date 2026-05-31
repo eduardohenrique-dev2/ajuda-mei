@@ -1,0 +1,138 @@
+openapi: 3.1.0
+info:
+  title: Sala do Empreendedor — API
+  version: "1.0.0"
+  description: |
+    API pública e endpoints internos da Sala do Empreendedor (MEI).
+    Endpoints internos usam **TanStack Server Functions** (`/_serverFn/*`)
+    autenticados via Bearer Token Supabase. Endpoints públicos vivem
+    em `/api/public/*` e não exigem sessão de usuário.
+servers:
+  - url: https://ajuda-mei.lovable.app
+    description: Produção
+  - url: https://id-preview--b9e4bb3e-d0a0-4f99-9cb0-eaab29cc94cd.lovable.app
+    description: Preview
+security:
+  - bearerAuth: []
+tags:
+  - name: Tickets
+  - name: Soluções
+  - name: Chat
+  - name: Avaliações (NPS)
+  - name: Staff
+  - name: Público
+  - name: Métricas
+
+paths:
+  /api/public/metrics:
+    get:
+      tags: [Métricas, Público]
+      summary: Métricas no formato Prometheus exposition
+      security: []
+      responses:
+        "200":
+          description: Texto Prometheus
+          content:
+            text/plain:
+              schema: { type: string }
+
+  /api/public/health:
+    get:
+      tags: [Público]
+      summary: Health check
+      security: []
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status: { type: string, example: ok }
+                  ts: { type: string, format: date-time }
+
+  /_serverFn/listTickets:
+    post:
+      tags: [Tickets]
+      summary: Listar tickets do MEI autenticado
+      responses:
+        "200": { description: Lista de tickets }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+
+  /_serverFn/createTicket:
+    post:
+      tags: [Tickets]
+      summary: Criar novo ticket
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [titulo, descricao, categoria]
+              properties:
+                titulo: { type: string, minLength: 4, maxLength: 160 }
+                descricao: { type: string, minLength: 10, maxLength: 4000 }
+                categoria:
+                  type: string
+                  enum: [tributacao, alvara, sebrae, prefeitura, outros]
+                anexos:
+                  type: array
+                  items: { type: string, description: "path em storage" }
+      responses:
+        "200": { description: Ticket criado }
+        "400": { description: Validação falhou }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+
+  /_serverFn/createEvaluation:
+    post:
+      tags: [Avaliações (NPS)]
+      summary: Avaliar atendimento (NPS 0-10)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [ticket_id, nota]
+              properties:
+                ticket_id: { type: string, format: uuid }
+                nota: { type: integer, minimum: 0, maximum: 10 }
+                comentario: { type: string, maxLength: 1000 }
+      responses:
+        "200": { description: Avaliação registrada }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+
+  /_serverFn/searchSolutions:
+    post:
+      tags: [Soluções]
+      summary: Busca semântica de soluções (RAG)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [q]
+              properties:
+                q: { type: string, minLength: 2, maxLength: 400 }
+                k: { type: integer, default: 5, maximum: 20 }
+      responses:
+        "200": { description: Lista de soluções similares com score }
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  responses:
+    Unauthorized:
+      description: Token ausente, expirado ou inválido
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error: { type: string, example: "Unauthorized" }

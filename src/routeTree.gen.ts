@@ -20,6 +20,8 @@ import { Route as AuthenticatedStaffRouteImport } from './routes/_authenticated/
 import { Route as AuthenticatedSolutionsRouteImport } from './routes/_authenticated/solutions'
 import { Route as AuthenticatedPerfilRouteImport } from './routes/_authenticated/perfil'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as ApiPublicMetricsRouteImport } from './routes/api/public/metrics'
+import { Route as ApiPublicHealthRouteImport } from './routes/api/public/health'
 import { Route as AuthenticatedTicketsIdRouteImport } from './routes/_authenticated/tickets.$id'
 import { Route as AuthenticatedStaffTicketsRouteImport } from './routes/_authenticated/staff.tickets'
 import { Route as AuthenticatedStaffSolutionsRouteImport } from './routes/_authenticated/staff.solutions'
@@ -82,6 +84,16 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const ApiPublicMetricsRoute = ApiPublicMetricsRouteImport.update({
+  id: '/api/public/metrics',
+  path: '/api/public/metrics',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicHealthRoute = ApiPublicHealthRouteImport.update({
+  id: '/api/public/health',
+  path: '/api/public/health',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedTicketsIdRoute = AuthenticatedTicketsIdRouteImport.update({
   id: '/$id',
   path: '/$id',
@@ -140,6 +152,8 @@ export interface FileRoutesByFullPath {
   '/staff/solutions': typeof AuthenticatedStaffSolutionsRoute
   '/staff/tickets': typeof AuthenticatedStaffTicketsRouteWithChildren
   '/tickets/$id': typeof AuthenticatedTicketsIdRoute
+  '/api/public/health': typeof ApiPublicHealthRoute
+  '/api/public/metrics': typeof ApiPublicMetricsRoute
   '/staff/tickets/$id': typeof AuthenticatedStaffTicketsIdRoute
 }
 export interface FileRoutesByTo {
@@ -159,6 +173,8 @@ export interface FileRoutesByTo {
   '/staff/solutions': typeof AuthenticatedStaffSolutionsRoute
   '/staff/tickets': typeof AuthenticatedStaffTicketsRouteWithChildren
   '/tickets/$id': typeof AuthenticatedTicketsIdRoute
+  '/api/public/health': typeof ApiPublicHealthRoute
+  '/api/public/metrics': typeof ApiPublicMetricsRoute
   '/staff/tickets/$id': typeof AuthenticatedStaffTicketsIdRoute
 }
 export interface FileRoutesById {
@@ -180,6 +196,8 @@ export interface FileRoutesById {
   '/_authenticated/staff/solutions': typeof AuthenticatedStaffSolutionsRoute
   '/_authenticated/staff/tickets': typeof AuthenticatedStaffTicketsRouteWithChildren
   '/_authenticated/tickets/$id': typeof AuthenticatedTicketsIdRoute
+  '/api/public/health': typeof ApiPublicHealthRoute
+  '/api/public/metrics': typeof ApiPublicMetricsRoute
   '/_authenticated/staff/tickets/$id': typeof AuthenticatedStaffTicketsIdRoute
 }
 export interface FileRouteTypes {
@@ -201,6 +219,8 @@ export interface FileRouteTypes {
     | '/staff/solutions'
     | '/staff/tickets'
     | '/tickets/$id'
+    | '/api/public/health'
+    | '/api/public/metrics'
     | '/staff/tickets/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -220,6 +240,8 @@ export interface FileRouteTypes {
     | '/staff/solutions'
     | '/staff/tickets'
     | '/tickets/$id'
+    | '/api/public/health'
+    | '/api/public/metrics'
     | '/staff/tickets/$id'
   id:
     | '__root__'
@@ -240,6 +262,8 @@ export interface FileRouteTypes {
     | '/_authenticated/staff/solutions'
     | '/_authenticated/staff/tickets'
     | '/_authenticated/tickets/$id'
+    | '/api/public/health'
+    | '/api/public/metrics'
     | '/_authenticated/staff/tickets/$id'
   fileRoutesById: FileRoutesById
 }
@@ -250,6 +274,8 @@ export interface RootRouteChildren {
   EsqueciSenhaRoute: typeof EsqueciSenhaRoute
   LoginRoute: typeof LoginRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
+  ApiPublicHealthRoute: typeof ApiPublicHealthRoute
+  ApiPublicMetricsRoute: typeof ApiPublicMetricsRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -330,6 +356,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/dashboard'
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRoute
+    }
+    '/api/public/metrics': {
+      id: '/api/public/metrics'
+      path: '/api/public/metrics'
+      fullPath: '/api/public/metrics'
+      preLoaderRoute: typeof ApiPublicMetricsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/health': {
+      id: '/api/public/health'
+      path: '/api/public/health'
+      fullPath: '/api/public/health'
+      preLoaderRoute: typeof ApiPublicHealthRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_authenticated/tickets/$id': {
       id: '/_authenticated/tickets/$id'
@@ -454,6 +494,8 @@ const rootRouteChildren: RootRouteChildren = {
   EsqueciSenhaRoute: EsqueciSenhaRoute,
   LoginRoute: LoginRoute,
   ResetPasswordRoute: ResetPasswordRoute,
+  ApiPublicHealthRoute: ApiPublicHealthRoute,
+  ApiPublicMetricsRoute: ApiPublicMetricsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
