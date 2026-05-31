@@ -1,13 +1,15 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { useState } from "react";
-import { ArrowLeft } from "lucide-react";
+import { useEffect, useState } from "react";
+import { ArrowLeft, Star } from "lucide-react";
 import { getMyTicketDetail, replyMyTicket } from "@/lib/tickets.functions";
+import { getMyEvaluation } from "@/lib/evaluations.functions";
 import { StatusBadge } from "./dashboard";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { AttachmentPicker, AttachmentList, type Anexo } from "@/components/attachments/AttachmentPicker";
+import { EvaluationDialog } from "@/components/tickets/EvaluationDialog";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/tickets/$id")({
@@ -18,16 +20,31 @@ export const Route = createFileRoute("/_authenticated/tickets/$id")({
 function MyTicketDetail() {
   const { id } = Route.useParams();
   const fetchDetail = useServerFn(getMyTicketDetail);
+  const fetchEval = useServerFn(getMyEvaluation);
   const reply = useServerFn(replyMyTicket);
   const qc = useQueryClient();
   const [message, setMessage] = useState("");
   const [anexos, setAnexos] = useState<Anexo[]>([]);
   const [busy, setBusy] = useState(false);
+  const [evalOpen, setEvalOpen] = useState(false);
 
   const { data, isLoading } = useQuery({
     queryKey: ["my-ticket", id],
     queryFn: () => fetchDetail({ data: { id } }),
   });
+
+  const fechado = data ? ["resolvido", "encerrado"].includes(data.ticket.status) : false;
+
+  const { data: evaluation } = useQuery({
+    queryKey: ["evaluation", id],
+    queryFn: () => fetchEval({ data: { ticket_id: id } }),
+    enabled: fechado,
+  });
+
+  // Abre automaticamente o NPS se ticket fechou e ainda sem avaliação
+  useEffect(() => {
+    if (fechado && evaluation === null) setEvalOpen(true);
+  }, [fechado, evaluation]);
 
   const send = async () => {
     if (!message.trim() && anexos.length === 0) return;
@@ -48,7 +65,6 @@ function MyTicketDetail() {
   if (!data) return <p className="text-sm text-muted-foreground">Ticket não encontrado.</p>;
 
   const { ticket, messages } = data;
-  const fechado = ["resolvido", "encerrado"].includes(ticket.status);
 
   return (
     <div className="space-y-6">
@@ -102,10 +118,29 @@ function MyTicketDetail() {
           </div>
         </div>
       ) : (
-        <p className="rounded-md border border-border bg-muted/30 p-3 text-xs text-muted-foreground">
-          Este ticket está {ticket.status}. Para uma nova solicitação, abra outro pelo chat.
-        </p>
+        <div className="space-y-3 rounded-md border border-border bg-muted/30 p-4">
+          <p className="text-xs text-muted-foreground">
+            Este ticket está {ticket.status}. Para uma nova solicitação, abra outro pelo chat.
+          </p>
+          {evaluation ? (
+            <div className="flex items-center gap-2 text-sm">
+              <Star className="h-4 w-4 fill-primary text-primary" />
+              <span>Você avaliou este atendimento com <strong>{evaluation.nota}/10</strong>.</span>
+            </div>
+          ) : (
+            <Button size="sm" variant="outline" onClick={() => setEvalOpen(true)}>
+              <Star className="mr-2 h-4 w-4" /> Avaliar atendimento
+            </Button>
+          )}
+        </div>
       )}
+
+      <EvaluationDialog
+        ticketId={id}
+        open={evalOpen}
+        onOpenChange={setEvalOpen}
+        onSubmitted={() => qc.invalidateQueries({ queryKey: ["evaluation", id] })}
+      />
     </div>
   );
 }

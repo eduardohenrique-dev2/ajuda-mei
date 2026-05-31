@@ -2,7 +2,9 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { getAnalytics } from "@/lib/staff.functions";
-import { TrendingUp, Inbox, CheckCircle2, BookOpen, Calendar } from "lucide-react";
+import { TrendingUp, Inbox, CheckCircle2, BookOpen, Calendar, Star, Download } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { downloadCSV, toCSV } from "@/lib/csv";
 
 export const Route = createFileRoute("/_authenticated/staff/analytics")({
   head: () => ({ meta: [{ title: "Analytics — Atendimento" }] }),
@@ -24,12 +26,44 @@ function AnalyticsPage() {
 
   const maxDia = Math.max(1, ...data.por_dia_14d.map(d => d.total));
   const totalCategorias = Object.values(data.por_categoria).reduce((a, b) => a + b, 0);
+  const nps = (data as any).nps as { total: number; media: number; promotores: number; neutros: number; detratores: number } | undefined;
+  const npsScore = nps && nps.total > 0
+    ? Math.round(((nps.promotores - nps.detratores) / nps.total) * 100)
+    : null;
+
+  const exportCSV = () => {
+    const stamp = new Date().toISOString().slice(0, 10);
+    const resumo = toCSV([
+      { metrica: "novos_hoje", valor: data.novos_hoje },
+      { metrica: "em_aberto", valor: data.abertos },
+      { metrica: "resolvidos_30d", valor: data.resolvidos_30d },
+      { metrica: "total_30d", valor: data.total_30d },
+      { metrica: "solucoes_ativas", valor: data.solucoes_ativas },
+      ...(nps ? [
+        { metrica: "nps_total", valor: nps.total },
+        { metrica: "nps_media", valor: nps.media },
+        { metrica: "nps_score", valor: npsScore ?? 0 },
+      ] : []),
+    ]);
+    downloadCSV(`sae-resumo-${stamp}.csv`, resumo);
+
+    const diario = toCSV(data.por_dia_14d.map(d => ({ dia: d.dia, total: d.total })));
+    downloadCSV(`sae-tickets-14d-${stamp}.csv`, diario);
+
+    const cats = toCSV(Object.entries(data.por_categoria).map(([categoria, total]) => ({ categoria, total })));
+    downloadCSV(`sae-categorias-${stamp}.csv`, cats);
+  };
 
   return (
     <div className="space-y-8">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Analytics</h1>
-        <p className="mt-1 text-sm text-muted-foreground">Visão consolidada da Sala do Empreendedor (últimos 30 dias).</p>
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight">Analytics</h1>
+          <p className="mt-1 text-sm text-muted-foreground">Visão consolidada da Sala do Empreendedor (últimos 30 dias).</p>
+        </div>
+        <Button onClick={exportCSV} variant="outline" size="sm">
+          <Download className="mr-2 h-4 w-4" /> Exportar CSV
+        </Button>
       </div>
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
@@ -38,6 +72,25 @@ function AnalyticsPage() {
         <Stat icon={CheckCircle2} label="Resolvidos (30d)" value={data.resolvidos_30d} accent="success" />
         <Stat icon={BookOpen} label="Soluções ativas" value={data.solucoes_ativas} accent="info" />
       </div>
+
+      {nps && (
+        <section className="rounded-xl border border-border bg-card p-5">
+          <div className="flex items-center gap-2">
+            <Star className="h-4 w-4 text-primary" />
+            <h2 className="font-medium">Satisfação (NPS — últimos 30d)</h2>
+          </div>
+          {nps.total === 0 ? (
+            <p className="mt-3 text-sm text-muted-foreground">Sem avaliações no período.</p>
+          ) : (
+            <div className="mt-4 grid gap-3 sm:grid-cols-4">
+              <NpsCell label="Score" value={npsScore ?? 0} suffix="" highlight />
+              <NpsCell label="Média" value={Number(nps.media).toFixed(1) as unknown as number} suffix="/10" />
+              <NpsCell label="Avaliações" value={nps.total} suffix="" />
+              <NpsCell label="Promotores / Detratores" value={`${nps.promotores}/${nps.detratores}` as unknown as number} suffix="" />
+            </div>
+          )}
+        </section>
+      )}
 
       <section className="rounded-xl border border-border bg-card p-5">
         <div className="flex items-center gap-2">
@@ -100,6 +153,15 @@ function AnalyticsPage() {
           </div>
         </section>
       </div>
+    </div>
+  );
+}
+
+function NpsCell({ label, value, suffix, highlight }: { label: string; value: number | string; suffix: string; highlight?: boolean }) {
+  return (
+    <div className={`rounded-lg border border-border p-3 ${highlight ? "bg-primary/10" : "bg-background"}`}>
+      <p className="text-[10px] uppercase tracking-wider text-muted-foreground">{label}</p>
+      <p className="mt-1 text-xl font-semibold">{value}{suffix}</p>
     </div>
   );
 }
