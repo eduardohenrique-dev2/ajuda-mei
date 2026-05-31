@@ -168,28 +168,6 @@ function TicketDetailPage() {
           </Button>
         </div>
       </div>
-          ))}
-        </div>
-      </div>
-
-      <div className="rounded-xl border border-border bg-card p-4">
-        <Textarea
-          value={message}
-          onChange={e => setMessage(e.target.value)}
-          placeholder="Escreva a resposta para o MEI..."
-          rows={4}
-          maxLength={5000}
-        />
-        <div className="mt-3 flex items-center justify-between">
-          <label className="flex items-center gap-2 text-xs text-muted-foreground">
-            <input type="checkbox" checked={interna} onChange={e => setInterna(e.target.checked)} />
-            Nota interna (não visível para o MEI)
-          </label>
-          <Button onClick={sendReply} disabled={busy || !message.trim()} size="sm">
-            Enviar resposta
-          </Button>
-        </div>
-      </div>
     </div>
   );
 }
