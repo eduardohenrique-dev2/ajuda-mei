@@ -16,9 +16,12 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedTicketsRouteImport } from './routes/_authenticated/tickets'
 import { Route as AuthenticatedStaffRouteImport } from './routes/_authenticated/staff'
 import { Route as AuthenticatedSolutionsRouteImport } from './routes/_authenticated/solutions'
+import { Route as AuthenticatedPerfilRouteImport } from './routes/_authenticated/perfil'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedTicketsIdRouteImport } from './routes/_authenticated/tickets.$id'
 import { Route as AuthenticatedStaffTicketsRouteImport } from './routes/_authenticated/staff.tickets'
 import { Route as AuthenticatedStaffSolutionsRouteImport } from './routes/_authenticated/staff.solutions'
+import { Route as AuthenticatedStaffSectorsRouteImport } from './routes/_authenticated/staff.sectors'
 import { Route as AuthenticatedStaffAnalyticsRouteImport } from './routes/_authenticated/staff.analytics'
 import { Route as AuthenticatedStaffTicketsIdRouteImport } from './routes/_authenticated/staff.tickets.$id'
 
@@ -56,10 +59,20 @@ const AuthenticatedSolutionsRoute = AuthenticatedSolutionsRouteImport.update({
   path: '/solutions',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedPerfilRoute = AuthenticatedPerfilRouteImport.update({
+  id: '/perfil',
+  path: '/perfil',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedTicketsIdRoute = AuthenticatedTicketsIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AuthenticatedTicketsRoute,
 } as any)
 const AuthenticatedStaffTicketsRoute =
   AuthenticatedStaffTicketsRouteImport.update({
@@ -71,6 +84,12 @@ const AuthenticatedStaffSolutionsRoute =
   AuthenticatedStaffSolutionsRouteImport.update({
     id: '/solutions',
     path: '/solutions',
+    getParentRoute: () => AuthenticatedStaffRoute,
+  } as any)
+const AuthenticatedStaffSectorsRoute =
+  AuthenticatedStaffSectorsRouteImport.update({
+    id: '/sectors',
+    path: '/sectors',
     getParentRoute: () => AuthenticatedStaffRoute,
   } as any)
 const AuthenticatedStaffAnalyticsRoute =
@@ -91,12 +110,15 @@ export interface FileRoutesByFullPath {
   '/cadastro': typeof CadastroRoute
   '/login': typeof LoginRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/perfil': typeof AuthenticatedPerfilRoute
   '/solutions': typeof AuthenticatedSolutionsRoute
   '/staff': typeof AuthenticatedStaffRouteWithChildren
-  '/tickets': typeof AuthenticatedTicketsRoute
+  '/tickets': typeof AuthenticatedTicketsRouteWithChildren
   '/staff/analytics': typeof AuthenticatedStaffAnalyticsRoute
+  '/staff/sectors': typeof AuthenticatedStaffSectorsRoute
   '/staff/solutions': typeof AuthenticatedStaffSolutionsRoute
   '/staff/tickets': typeof AuthenticatedStaffTicketsRouteWithChildren
+  '/tickets/$id': typeof AuthenticatedTicketsIdRoute
   '/staff/tickets/$id': typeof AuthenticatedStaffTicketsIdRoute
 }
 export interface FileRoutesByTo {
@@ -104,12 +126,15 @@ export interface FileRoutesByTo {
   '/cadastro': typeof CadastroRoute
   '/login': typeof LoginRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/perfil': typeof AuthenticatedPerfilRoute
   '/solutions': typeof AuthenticatedSolutionsRoute
   '/staff': typeof AuthenticatedStaffRouteWithChildren
-  '/tickets': typeof AuthenticatedTicketsRoute
+  '/tickets': typeof AuthenticatedTicketsRouteWithChildren
   '/staff/analytics': typeof AuthenticatedStaffAnalyticsRoute
+  '/staff/sectors': typeof AuthenticatedStaffSectorsRoute
   '/staff/solutions': typeof AuthenticatedStaffSolutionsRoute
   '/staff/tickets': typeof AuthenticatedStaffTicketsRouteWithChildren
+  '/tickets/$id': typeof AuthenticatedTicketsIdRoute
   '/staff/tickets/$id': typeof AuthenticatedStaffTicketsIdRoute
 }
 export interface FileRoutesById {
@@ -119,12 +144,15 @@ export interface FileRoutesById {
   '/cadastro': typeof CadastroRoute
   '/login': typeof LoginRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/perfil': typeof AuthenticatedPerfilRoute
   '/_authenticated/solutions': typeof AuthenticatedSolutionsRoute
   '/_authenticated/staff': typeof AuthenticatedStaffRouteWithChildren
-  '/_authenticated/tickets': typeof AuthenticatedTicketsRoute
+  '/_authenticated/tickets': typeof AuthenticatedTicketsRouteWithChildren
   '/_authenticated/staff/analytics': typeof AuthenticatedStaffAnalyticsRoute
+  '/_authenticated/staff/sectors': typeof AuthenticatedStaffSectorsRoute
   '/_authenticated/staff/solutions': typeof AuthenticatedStaffSolutionsRoute
   '/_authenticated/staff/tickets': typeof AuthenticatedStaffTicketsRouteWithChildren
+  '/_authenticated/tickets/$id': typeof AuthenticatedTicketsIdRoute
   '/_authenticated/staff/tickets/$id': typeof AuthenticatedStaffTicketsIdRoute
 }
 export interface FileRouteTypes {
@@ -134,12 +162,15 @@ export interface FileRouteTypes {
     | '/cadastro'
     | '/login'
     | '/dashboard'
+    | '/perfil'
     | '/solutions'
     | '/staff'
     | '/tickets'
     | '/staff/analytics'
+    | '/staff/sectors'
     | '/staff/solutions'
     | '/staff/tickets'
+    | '/tickets/$id'
     | '/staff/tickets/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -147,12 +178,15 @@ export interface FileRouteTypes {
     | '/cadastro'
     | '/login'
     | '/dashboard'
+    | '/perfil'
     | '/solutions'
     | '/staff'
     | '/tickets'
     | '/staff/analytics'
+    | '/staff/sectors'
     | '/staff/solutions'
     | '/staff/tickets'
+    | '/tickets/$id'
     | '/staff/tickets/$id'
   id:
     | '__root__'
@@ -161,12 +195,15 @@ export interface FileRouteTypes {
     | '/cadastro'
     | '/login'
     | '/_authenticated/dashboard'
+    | '/_authenticated/perfil'
     | '/_authenticated/solutions'
     | '/_authenticated/staff'
     | '/_authenticated/tickets'
     | '/_authenticated/staff/analytics'
+    | '/_authenticated/staff/sectors'
     | '/_authenticated/staff/solutions'
     | '/_authenticated/staff/tickets'
+    | '/_authenticated/tickets/$id'
     | '/_authenticated/staff/tickets/$id'
   fileRoutesById: FileRoutesById
 }
@@ -228,12 +265,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSolutionsRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/perfil': {
+      id: '/_authenticated/perfil'
+      path: '/perfil'
+      fullPath: '/perfil'
+      preLoaderRoute: typeof AuthenticatedPerfilRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/dashboard': {
       id: '/_authenticated/dashboard'
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/tickets/$id': {
+      id: '/_authenticated/tickets/$id'
+      path: '/$id'
+      fullPath: '/tickets/$id'
+      preLoaderRoute: typeof AuthenticatedTicketsIdRouteImport
+      parentRoute: typeof AuthenticatedTicketsRoute
     }
     '/_authenticated/staff/tickets': {
       id: '/_authenticated/staff/tickets'
@@ -247,6 +298,13 @@ declare module '@tanstack/react-router' {
       path: '/solutions'
       fullPath: '/staff/solutions'
       preLoaderRoute: typeof AuthenticatedStaffSolutionsRouteImport
+      parentRoute: typeof AuthenticatedStaffRoute
+    }
+    '/_authenticated/staff/sectors': {
+      id: '/_authenticated/staff/sectors'
+      path: '/sectors'
+      fullPath: '/staff/sectors'
+      preLoaderRoute: typeof AuthenticatedStaffSectorsRouteImport
       parentRoute: typeof AuthenticatedStaffRoute
     }
     '/_authenticated/staff/analytics': {
@@ -282,12 +340,14 @@ const AuthenticatedStaffTicketsRouteWithChildren =
 
 interface AuthenticatedStaffRouteChildren {
   AuthenticatedStaffAnalyticsRoute: typeof AuthenticatedStaffAnalyticsRoute
+  AuthenticatedStaffSectorsRoute: typeof AuthenticatedStaffSectorsRoute
   AuthenticatedStaffSolutionsRoute: typeof AuthenticatedStaffSolutionsRoute
   AuthenticatedStaffTicketsRoute: typeof AuthenticatedStaffTicketsRouteWithChildren
 }
 
 const AuthenticatedStaffRouteChildren: AuthenticatedStaffRouteChildren = {
   AuthenticatedStaffAnalyticsRoute: AuthenticatedStaffAnalyticsRoute,
+  AuthenticatedStaffSectorsRoute: AuthenticatedStaffSectorsRoute,
   AuthenticatedStaffSolutionsRoute: AuthenticatedStaffSolutionsRoute,
   AuthenticatedStaffTicketsRoute: AuthenticatedStaffTicketsRouteWithChildren,
 }
@@ -295,18 +355,31 @@ const AuthenticatedStaffRouteChildren: AuthenticatedStaffRouteChildren = {
 const AuthenticatedStaffRouteWithChildren =
   AuthenticatedStaffRoute._addFileChildren(AuthenticatedStaffRouteChildren)
 
+interface AuthenticatedTicketsRouteChildren {
+  AuthenticatedTicketsIdRoute: typeof AuthenticatedTicketsIdRoute
+}
+
+const AuthenticatedTicketsRouteChildren: AuthenticatedTicketsRouteChildren = {
+  AuthenticatedTicketsIdRoute: AuthenticatedTicketsIdRoute,
+}
+
+const AuthenticatedTicketsRouteWithChildren =
+  AuthenticatedTicketsRoute._addFileChildren(AuthenticatedTicketsRouteChildren)
+
 interface AuthenticatedRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedPerfilRoute: typeof AuthenticatedPerfilRoute
   AuthenticatedSolutionsRoute: typeof AuthenticatedSolutionsRoute
   AuthenticatedStaffRoute: typeof AuthenticatedStaffRouteWithChildren
-  AuthenticatedTicketsRoute: typeof AuthenticatedTicketsRoute
+  AuthenticatedTicketsRoute: typeof AuthenticatedTicketsRouteWithChildren
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedPerfilRoute: AuthenticatedPerfilRoute,
   AuthenticatedSolutionsRoute: AuthenticatedSolutionsRoute,
   AuthenticatedStaffRoute: AuthenticatedStaffRouteWithChildren,
-  AuthenticatedTicketsRoute: AuthenticatedTicketsRoute,
+  AuthenticatedTicketsRoute: AuthenticatedTicketsRouteWithChildren,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(

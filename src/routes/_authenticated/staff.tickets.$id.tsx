@@ -7,6 +7,7 @@ import { getTicketDetail, replyTicket, updateTicketStatus } from "@/lib/staff.fu
 import { StatusBadge } from "../_authenticated/dashboard";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { AttachmentPicker, AttachmentList, type Anexo } from "@/components/attachments/AttachmentPicker";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/staff/tickets/$id")({
@@ -31,6 +32,7 @@ function TicketDetailPage() {
   const [message, setMessage] = useState("");
   const [interna, setInterna] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [anexos, setAnexos] = useState<Anexo[]>([]);
 
   const { data, isLoading } = useQuery({
     queryKey: ["staff-ticket", id],
@@ -38,11 +40,11 @@ function TicketDetailPage() {
   });
 
   const sendReply = async () => {
-    if (!message.trim()) return;
+    if (!message.trim() && anexos.length === 0) return;
     setBusy(true);
     try {
-      await reply({ data: { ticket_id: id, mensagem: message.trim(), interna } });
-      setMessage("");
+      await reply({ data: { ticket_id: id, mensagem: message.trim() || "(anexo enviado)", interna, anexos } });
+      setMessage(""); setAnexos([]);
       qc.invalidateQueries({ queryKey: ["staff-ticket", id] });
       qc.invalidateQueries({ queryKey: ["staff-tickets"] });
       toast.success(interna ? "Nota interna registrada" : "Resposta enviada");
@@ -141,12 +143,13 @@ function TicketDetailPage() {
                 <span className="ml-auto">{new Date(m.criado_em).toLocaleString("pt-BR")}</span>
               </div>
               <p className="whitespace-pre-wrap">{m.mensagem}</p>
+              <AttachmentList anexos={(m.anexos as Anexo[]) ?? []} />
             </div>
           ))}
         </div>
       </div>
 
-      <div className="rounded-xl border border-border bg-card p-4">
+      <div className="rounded-xl border border-border bg-card p-4 space-y-3">
         <Textarea
           value={message}
           onChange={e => setMessage(e.target.value)}
@@ -154,12 +157,13 @@ function TicketDetailPage() {
           rows={4}
           maxLength={5000}
         />
-        <div className="mt-3 flex items-center justify-between">
+        <AttachmentPicker ticketId={id} anexos={anexos} onChange={setAnexos} />
+        <div className="flex items-center justify-between">
           <label className="flex items-center gap-2 text-xs text-muted-foreground">
             <input type="checkbox" checked={interna} onChange={e => setInterna(e.target.checked)} />
             Nota interna (não visível para o MEI)
           </label>
-          <Button onClick={sendReply} disabled={busy || !message.trim()} size="sm">
+          <Button onClick={sendReply} disabled={busy || (!message.trim() && anexos.length === 0)} size="sm">
             Enviar resposta
           </Button>
         </div>
