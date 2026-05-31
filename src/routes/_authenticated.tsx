@@ -35,7 +35,11 @@ const staffNav: NavItem[] = [
   { to: "/staff/documentos", label: "Revisar documentos", icon: FolderArchive },
   { to: "/staff/solutions", label: "Gerir soluções", icon: BookOpen },
   { to: "/staff/sectors", label: "Setores", icon: MapPin },
+];
+
+const adminNav: NavItem[] = [
   { to: "/staff/analytics", label: "Analytics", icon: BarChart3 },
+  { to: "/staff/audit", label: "Auditoria LGPD", icon: FileSearch },
 ];
 
 function NavList({
@@ -100,9 +104,6 @@ function AuthenticatedLayout() {
   const { data: rolesData } = useMyRoles();
   const isStaff = !!rolesData?.isStaff;
   const isAdmin = !!rolesData?.isAdmin;
-  const staffNavWithAdmin: NavItem[] = isAdmin
-    ? [...staffNav, { to: "/staff/audit", label: "Auditoria LGPD", icon: FileSearch }]
-    : staffNav;
 
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -124,12 +125,20 @@ function AuthenticatedLayout() {
 
   const NavContent = ({ onItemClick }: { onItemClick?: () => void }) => (
     <>
-      <NavList items={meiNav} pathname={pathname} onItemClick={onItemClick} />
+      <NavList items={meiNav} pathname={pathname} label="MEI" onItemClick={onItemClick} />
       {isStaff && (
         <NavList
-          items={staffNavWithAdmin}
+          items={staffNav}
           pathname={pathname}
           label="Atendimento"
+          onItemClick={onItemClick}
+        />
+      )}
+      {isAdmin && (
+        <NavList
+          items={adminNav}
+          pathname={pathname}
+          label="Administração"
           onItemClick={onItemClick}
         />
       )}

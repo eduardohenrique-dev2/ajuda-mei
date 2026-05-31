@@ -32,16 +32,34 @@ function DashboardPage() {
 
   return (
     <div className="space-y-8">
-      <div>
+      <section className="overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-primary/15 via-primary/5 to-transparent p-6 sm:p-8">
         {loadingProfile ? (
           <Skeleton className="h-8 w-64" />
         ) : (
-          <h1 className="text-2xl font-semibold tracking-tight">Olá, {firstName} 👋</h1>
+          <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">
+            Olá, {firstName} 👋
+          </h1>
         )}
-        <p className="mt-1 text-sm text-muted-foreground">
-          Bem-vindo de volta. Veja suas pendências e atalhos abaixo.
+        <p className="mt-2 max-w-xl text-sm text-muted-foreground">
+          {aguardando > 0
+            ? `Você tem ${aguardando} atendimento(s) aguardando uma resposta sua.`
+            : "Tudo em dia por aqui. Procure uma solução ou abra um novo atendimento."}
         </p>
-      </div>
+        <div className="mt-5 flex flex-wrap gap-2">
+          <Link
+            to="/solucoes"
+            className="inline-flex min-h-11 items-center gap-2 rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground transition hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            <Search className="h-4 w-4" aria-hidden="true" /> Buscar solução
+          </Link>
+          <Link
+            to="/tickets"
+            className="inline-flex min-h-11 items-center gap-2 rounded-md border border-border bg-card px-4 text-sm font-medium transition hover:border-primary/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            <Ticket className="h-4 w-4" aria-hidden="true" /> Meus atendimentos
+          </Link>
+        </div>
+      </section>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {loadingTickets ? (
@@ -64,9 +82,8 @@ function DashboardPage() {
 
       <section>
         <h2 className="text-sm font-medium uppercase tracking-wider text-muted-foreground">Atalhos</h2>
-        <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          <ActionCard to="/solucoes" icon={Search} title="Buscar solução" desc="Procedimentos oficiais." />
-          <ActionCard to="/tickets" icon={Ticket} title="Meus atendimentos" desc="Status e protocolos." />
+        <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <ActionCard to="/documentos" icon={FileText} title="Documentos" desc="Enviar e acompanhar." />
           <ActionCard to="/solutions" icon={BookOpen} title="Base de soluções" desc="Catálogo completo." />
           <div className="rounded-xl border border-border bg-card p-5">
             <div className="grid h-10 w-10 place-items-center rounded-lg bg-primary/15 text-primary">
