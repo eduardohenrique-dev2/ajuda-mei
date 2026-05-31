@@ -28,10 +28,45 @@ const staffNav = [
   { to: "/staff/analytics", label: "Analytics", icon: BarChart3 },
 ];
 
+type NavItem = { to: string; label: string; icon: typeof LayoutDashboard };
+
+function NavList({ items, pathname, label }: { items: NavItem[]; pathname: string; label?: string }) {
+  return (
+    <div>
+      {label && (
+        <p className="mb-2 mt-4 px-3 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+          {label}
+        </p>
+      )}
+      <nav className="flex flex-col gap-1">
+        {items.map(item => {
+          const active = pathname.startsWith(item.to);
+          return (
+            <Link
+              key={item.to}
+              to={item.to as any}
+              className={`flex items-center gap-3 rounded-md px-3 py-2 text-sm transition ${
+                active
+                  ? "bg-sidebar-accent text-sidebar-accent-foreground"
+                  : "text-muted-foreground hover:bg-sidebar-accent/60 hover:text-foreground"
+              }`}
+            >
+              <item.icon className="h-4 w-4" />
+              {item.label}
+            </Link>
+          );
+        })}
+      </nav>
+    </div>
+  );
+}
+
 function AuthenticatedLayout() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const pathname = useRouterState({ select: s => s.location.pathname });
+  const { data: rolesData } = useMyRoles();
+  const isStaff = !!rolesData?.isStaff;
 
   const logout = async () => {
     await supabase.auth.signOut();
@@ -46,31 +81,19 @@ function AuthenticatedLayout() {
           <span className="font-semibold tracking-tight">Sala do Empreendedor</span>
         </Link>
 
-        <nav className="mt-6 flex flex-col gap-1">
-          {navItems.map(item => {
-            const active = pathname.startsWith(item.to);
-            return (
-              <Link key={item.to} to={item.to}
-                className={`flex items-center gap-3 rounded-md px-3 py-2 text-sm transition ${
-                  active
-                    ? "bg-sidebar-accent text-sidebar-accent-foreground"
-                    : "text-muted-foreground hover:bg-sidebar-accent/60 hover:text-foreground"
-                }`}>
-                <item.icon className="h-4 w-4" />
-                {item.label}
-              </Link>
-            );
-          })}
-        </nav>
+        <div className="mt-4">
+          <NavList items={meiNav} pathname={pathname} />
+          {isStaff && <NavList items={staffNav} pathname={pathname} label="Atendimento" />}
+        </div>
 
         <div className="mt-auto rounded-lg border border-sidebar-border bg-card/40 p-3">
           <div className="flex items-center gap-2">
             <div className="grid h-8 w-8 place-items-center rounded-full bg-primary/15 text-primary">
-              <Building2 className="h-4 w-4" />
+              {isStaff ? <ShieldCheck className="h-4 w-4" /> : <Building2 className="h-4 w-4" />}
             </div>
             <div className="min-w-0">
               <p className="truncate text-xs font-medium">{user?.email}</p>
-              <p className="text-[10px] text-muted-foreground">MEI</p>
+              <p className="text-[10px] text-muted-foreground">{isStaff ? "Atendente" : "MEI"}</p>
             </div>
           </div>
           <Button onClick={logout} variant="ghost" size="sm" className="mt-3 w-full justify-start text-muted-foreground">
@@ -93,7 +116,7 @@ function AuthenticatedLayout() {
         </div>
       </main>
 
-      <ChatWidget />
+      {!isStaff && <ChatWidget />}
     </div>
   );
 }
