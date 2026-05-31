@@ -7,6 +7,7 @@ import { getTicketDetail, replyTicket, updateTicketStatus } from "@/lib/staff.fu
 import { StatusBadge } from "../_authenticated/dashboard";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { AttachmentPicker, AttachmentList, type Anexo } from "@/components/attachments/AttachmentPicker";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/staff/tickets/$id")({
