@@ -32,6 +32,7 @@ function TicketDetailPage() {
   const [message, setMessage] = useState("");
   const [interna, setInterna] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [anexos, setAnexos] = useState<Anexo[]>([]);
 
   const { data, isLoading } = useQuery({
     queryKey: ["staff-ticket", id],
@@ -39,11 +40,11 @@ function TicketDetailPage() {
   });
 
   const sendReply = async () => {
-    if (!message.trim()) return;
+    if (!message.trim() && anexos.length === 0) return;
     setBusy(true);
     try {
-      await reply({ data: { ticket_id: id, mensagem: message.trim(), interna } });
-      setMessage("");
+      await reply({ data: { ticket_id: id, mensagem: message.trim() || "(anexo enviado)", interna, anexos } });
+      setMessage(""); setAnexos([]);
       qc.invalidateQueries({ queryKey: ["staff-ticket", id] });
       qc.invalidateQueries({ queryKey: ["staff-tickets"] });
       toast.success(interna ? "Nota interna registrada" : "Resposta enviada");
