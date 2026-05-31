@@ -18,6 +18,7 @@ import { Route as AuthenticatedStaffRouteImport } from './routes/_authenticated/
 import { Route as AuthenticatedSolutionsRouteImport } from './routes/_authenticated/solutions'
 import { Route as AuthenticatedPerfilRouteImport } from './routes/_authenticated/perfil'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedTicketsIdRouteImport } from './routes/_authenticated/tickets.$id'
 import { Route as AuthenticatedStaffTicketsRouteImport } from './routes/_authenticated/staff.tickets'
 import { Route as AuthenticatedStaffSolutionsRouteImport } from './routes/_authenticated/staff.solutions'
 import { Route as AuthenticatedStaffSectorsRouteImport } from './routes/_authenticated/staff.sectors'
@@ -68,6 +69,11 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedTicketsIdRoute = AuthenticatedTicketsIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AuthenticatedTicketsRoute,
+} as any)
 const AuthenticatedStaffTicketsRoute =
   AuthenticatedStaffTicketsRouteImport.update({
     id: '/tickets',
@@ -107,11 +113,12 @@ export interface FileRoutesByFullPath {
   '/perfil': typeof AuthenticatedPerfilRoute
   '/solutions': typeof AuthenticatedSolutionsRoute
   '/staff': typeof AuthenticatedStaffRouteWithChildren
-  '/tickets': typeof AuthenticatedTicketsRoute
+  '/tickets': typeof AuthenticatedTicketsRouteWithChildren
   '/staff/analytics': typeof AuthenticatedStaffAnalyticsRoute
   '/staff/sectors': typeof AuthenticatedStaffSectorsRoute
   '/staff/solutions': typeof AuthenticatedStaffSolutionsRoute
   '/staff/tickets': typeof AuthenticatedStaffTicketsRouteWithChildren
+  '/tickets/$id': typeof AuthenticatedTicketsIdRoute
   '/staff/tickets/$id': typeof AuthenticatedStaffTicketsIdRoute
 }
 export interface FileRoutesByTo {
@@ -122,11 +129,12 @@ export interface FileRoutesByTo {
   '/perfil': typeof AuthenticatedPerfilRoute
   '/solutions': typeof AuthenticatedSolutionsRoute
   '/staff': typeof AuthenticatedStaffRouteWithChildren
-  '/tickets': typeof AuthenticatedTicketsRoute
+  '/tickets': typeof AuthenticatedTicketsRouteWithChildren
   '/staff/analytics': typeof AuthenticatedStaffAnalyticsRoute
   '/staff/sectors': typeof AuthenticatedStaffSectorsRoute
   '/staff/solutions': typeof AuthenticatedStaffSolutionsRoute
   '/staff/tickets': typeof AuthenticatedStaffTicketsRouteWithChildren
+  '/tickets/$id': typeof AuthenticatedTicketsIdRoute
   '/staff/tickets/$id': typeof AuthenticatedStaffTicketsIdRoute
 }
 export interface FileRoutesById {
@@ -139,11 +147,12 @@ export interface FileRoutesById {
   '/_authenticated/perfil': typeof AuthenticatedPerfilRoute
   '/_authenticated/solutions': typeof AuthenticatedSolutionsRoute
   '/_authenticated/staff': typeof AuthenticatedStaffRouteWithChildren
-  '/_authenticated/tickets': typeof AuthenticatedTicketsRoute
+  '/_authenticated/tickets': typeof AuthenticatedTicketsRouteWithChildren
   '/_authenticated/staff/analytics': typeof AuthenticatedStaffAnalyticsRoute
   '/_authenticated/staff/sectors': typeof AuthenticatedStaffSectorsRoute
   '/_authenticated/staff/solutions': typeof AuthenticatedStaffSolutionsRoute
   '/_authenticated/staff/tickets': typeof AuthenticatedStaffTicketsRouteWithChildren
+  '/_authenticated/tickets/$id': typeof AuthenticatedTicketsIdRoute
   '/_authenticated/staff/tickets/$id': typeof AuthenticatedStaffTicketsIdRoute
 }
 export interface FileRouteTypes {
@@ -161,6 +170,7 @@ export interface FileRouteTypes {
     | '/staff/sectors'
     | '/staff/solutions'
     | '/staff/tickets'
+    | '/tickets/$id'
     | '/staff/tickets/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -176,6 +186,7 @@ export interface FileRouteTypes {
     | '/staff/sectors'
     | '/staff/solutions'
     | '/staff/tickets'
+    | '/tickets/$id'
     | '/staff/tickets/$id'
   id:
     | '__root__'
@@ -192,6 +203,7 @@ export interface FileRouteTypes {
     | '/_authenticated/staff/sectors'
     | '/_authenticated/staff/solutions'
     | '/_authenticated/staff/tickets'
+    | '/_authenticated/tickets/$id'
     | '/_authenticated/staff/tickets/$id'
   fileRoutesById: FileRoutesById
 }
@@ -267,6 +279,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/tickets/$id': {
+      id: '/_authenticated/tickets/$id'
+      path: '/$id'
+      fullPath: '/tickets/$id'
+      preLoaderRoute: typeof AuthenticatedTicketsIdRouteImport
+      parentRoute: typeof AuthenticatedTicketsRoute
+    }
     '/_authenticated/staff/tickets': {
       id: '/_authenticated/staff/tickets'
       path: '/tickets'
@@ -336,12 +355,23 @@ const AuthenticatedStaffRouteChildren: AuthenticatedStaffRouteChildren = {
 const AuthenticatedStaffRouteWithChildren =
   AuthenticatedStaffRoute._addFileChildren(AuthenticatedStaffRouteChildren)
 
+interface AuthenticatedTicketsRouteChildren {
+  AuthenticatedTicketsIdRoute: typeof AuthenticatedTicketsIdRoute
+}
+
+const AuthenticatedTicketsRouteChildren: AuthenticatedTicketsRouteChildren = {
+  AuthenticatedTicketsIdRoute: AuthenticatedTicketsIdRoute,
+}
+
+const AuthenticatedTicketsRouteWithChildren =
+  AuthenticatedTicketsRoute._addFileChildren(AuthenticatedTicketsRouteChildren)
+
 interface AuthenticatedRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedPerfilRoute: typeof AuthenticatedPerfilRoute
   AuthenticatedSolutionsRoute: typeof AuthenticatedSolutionsRoute
   AuthenticatedStaffRoute: typeof AuthenticatedStaffRouteWithChildren
-  AuthenticatedTicketsRoute: typeof AuthenticatedTicketsRoute
+  AuthenticatedTicketsRoute: typeof AuthenticatedTicketsRouteWithChildren
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
@@ -349,7 +379,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedPerfilRoute: AuthenticatedPerfilRoute,
   AuthenticatedSolutionsRoute: AuthenticatedSolutionsRoute,
   AuthenticatedStaffRoute: AuthenticatedStaffRouteWithChildren,
-  AuthenticatedTicketsRoute: AuthenticatedTicketsRoute,
+  AuthenticatedTicketsRoute: AuthenticatedTicketsRouteWithChildren,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
@@ -365,3 +395,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
