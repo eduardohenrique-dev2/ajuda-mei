@@ -14,16 +14,327 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      chat_history: {
+        Row: {
+          canal: Database["public"]["Enums"]["ticket_channel"]
+          criado_em: string
+          id: string
+          intent_detectado: string | null
+          mei_id: string | null
+          mensagem: string
+          papel: string
+          sessao_id: string
+          ticket_id: string | null
+        }
+        Insert: {
+          canal?: Database["public"]["Enums"]["ticket_channel"]
+          criado_em?: string
+          id?: string
+          intent_detectado?: string | null
+          mei_id?: string | null
+          mensagem: string
+          papel: string
+          sessao_id: string
+          ticket_id?: string | null
+        }
+        Update: {
+          canal?: Database["public"]["Enums"]["ticket_channel"]
+          criado_em?: string
+          id?: string
+          intent_detectado?: string | null
+          mei_id?: string | null
+          mensagem?: string
+          papel?: string
+          sessao_id?: string
+          ticket_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chat_history_ticket_id_fkey"
+            columns: ["ticket_id"]
+            isOneToOne: false
+            referencedRelation: "tickets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          atualizado_em: string
+          cnpj: string | null
+          criado_em: string
+          email: string | null
+          id: string
+          nome: string
+          status: Database["public"]["Enums"]["mei_status"]
+          telefone: string | null
+        }
+        Insert: {
+          atualizado_em?: string
+          cnpj?: string | null
+          criado_em?: string
+          email?: string | null
+          id: string
+          nome: string
+          status?: Database["public"]["Enums"]["mei_status"]
+          telefone?: string | null
+        }
+        Update: {
+          atualizado_em?: string
+          cnpj?: string | null
+          criado_em?: string
+          email?: string | null
+          id?: string
+          nome?: string
+          status?: Database["public"]["Enums"]["mei_status"]
+          telefone?: string | null
+        }
+        Relationships: []
+      }
+      sectors: {
+        Row: {
+          ativo: boolean
+          categoria: string
+          criado_em: string
+          descricao: string | null
+          email: string | null
+          endereco: string | null
+          horario: string | null
+          id: string
+          nome: string
+          palavras_chave: string[]
+          site: string | null
+          telefone: string | null
+        }
+        Insert: {
+          ativo?: boolean
+          categoria: string
+          criado_em?: string
+          descricao?: string | null
+          email?: string | null
+          endereco?: string | null
+          horario?: string | null
+          id?: string
+          nome: string
+          palavras_chave?: string[]
+          site?: string | null
+          telefone?: string | null
+        }
+        Update: {
+          ativo?: boolean
+          categoria?: string
+          criado_em?: string
+          descricao?: string | null
+          email?: string | null
+          endereco?: string | null
+          horario?: string | null
+          id?: string
+          nome?: string
+          palavras_chave?: string[]
+          site?: string | null
+          telefone?: string | null
+        }
+        Relationships: []
+      }
+      solutions: {
+        Row: {
+          ativo: boolean
+          atualizado_em: string
+          categoria: Database["public"]["Enums"]["solution_category"]
+          criado_em: string
+          criado_por: string | null
+          descricao: string
+          embedding: string | null
+          id: string
+          link_oficial: string | null
+          palavras_chave: string[]
+          passo_a_passo: Json
+          setor_id: string | null
+          tags: string[]
+          titulo: string
+        }
+        Insert: {
+          ativo?: boolean
+          atualizado_em?: string
+          categoria: Database["public"]["Enums"]["solution_category"]
+          criado_em?: string
+          criado_por?: string | null
+          descricao: string
+          embedding?: string | null
+          id?: string
+          link_oficial?: string | null
+          palavras_chave?: string[]
+          passo_a_passo?: Json
+          setor_id?: string | null
+          tags?: string[]
+          titulo: string
+        }
+        Update: {
+          ativo?: boolean
+          atualizado_em?: string
+          categoria?: Database["public"]["Enums"]["solution_category"]
+          criado_em?: string
+          criado_por?: string | null
+          descricao?: string
+          embedding?: string | null
+          id?: string
+          link_oficial?: string | null
+          palavras_chave?: string[]
+          passo_a_passo?: Json
+          setor_id?: string | null
+          tags?: string[]
+          titulo?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "solutions_setor_id_fkey"
+            columns: ["setor_id"]
+            isOneToOne: false
+            referencedRelation: "sectors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tickets: {
+        Row: {
+          atendente_id: string | null
+          atualizado_em: string
+          canal: Database["public"]["Enums"]["ticket_channel"]
+          categoria: Database["public"]["Enums"]["solution_category"]
+          criado_em: string
+          descricao: string
+          encerrado_em: string | null
+          id: string
+          mei_id: string
+          prioridade: Database["public"]["Enums"]["ticket_priority"]
+          protocolo: string
+          setor_id: string | null
+          solucao_sugerida_id: string | null
+          status: Database["public"]["Enums"]["ticket_status"]
+          titulo: string
+        }
+        Insert: {
+          atendente_id?: string | null
+          atualizado_em?: string
+          canal?: Database["public"]["Enums"]["ticket_channel"]
+          categoria?: Database["public"]["Enums"]["solution_category"]
+          criado_em?: string
+          descricao: string
+          encerrado_em?: string | null
+          id?: string
+          mei_id: string
+          prioridade?: Database["public"]["Enums"]["ticket_priority"]
+          protocolo?: string
+          setor_id?: string | null
+          solucao_sugerida_id?: string | null
+          status?: Database["public"]["Enums"]["ticket_status"]
+          titulo: string
+        }
+        Update: {
+          atendente_id?: string | null
+          atualizado_em?: string
+          canal?: Database["public"]["Enums"]["ticket_channel"]
+          categoria?: Database["public"]["Enums"]["solution_category"]
+          criado_em?: string
+          descricao?: string
+          encerrado_em?: string | null
+          id?: string
+          mei_id?: string
+          prioridade?: Database["public"]["Enums"]["ticket_priority"]
+          protocolo?: string
+          setor_id?: string | null
+          solucao_sugerida_id?: string | null
+          status?: Database["public"]["Enums"]["ticket_status"]
+          titulo?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tickets_setor_id_fkey"
+            columns: ["setor_id"]
+            isOneToOne: false
+            referencedRelation: "sectors"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tickets_solucao_sugerida_id_fkey"
+            columns: ["solucao_sugerida_id"]
+            isOneToOne: false
+            referencedRelation: "solutions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_roles: {
+        Row: {
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      generate_protocolo: { Args: never; Returns: string }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      is_staff: { Args: { _user_id: string }; Returns: boolean }
+      match_solutions: {
+        Args: {
+          match_count?: number
+          min_similarity?: number
+          query_embedding: string
+        }
+        Returns: {
+          categoria: Database["public"]["Enums"]["solution_category"]
+          descricao: string
+          id: string
+          link_oficial: string
+          passo_a_passo: Json
+          similarity: number
+          titulo: string
+        }[]
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "mei" | "atendente" | "gestor" | "admin"
+      mei_status: "pendente_validacao" | "verificado"
+      solution_category:
+        | "declaracao_anual"
+        | "das"
+        | "parcelamento"
+        | "regularizacao"
+        | "funcionarios"
+        | "notas_fiscais"
+        | "cadastro"
+        | "pendencias"
+        | "outros_setores"
+        | "outros"
+      ticket_channel: "web" | "whatsapp" | "presencial"
+      ticket_priority: "baixa" | "normal" | "alta" | "urgente"
+      ticket_status:
+        | "novo"
+        | "em_analise"
+        | "aguardando_mei"
+        | "resolvido"
+        | "encerrado"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +461,30 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["mei", "atendente", "gestor", "admin"],
+      mei_status: ["pendente_validacao", "verificado"],
+      solution_category: [
+        "declaracao_anual",
+        "das",
+        "parcelamento",
+        "regularizacao",
+        "funcionarios",
+        "notas_fiscais",
+        "cadastro",
+        "pendencias",
+        "outros_setores",
+        "outros",
+      ],
+      ticket_channel: ["web", "whatsapp", "presencial"],
+      ticket_priority: ["baixa", "normal", "alta", "urgente"],
+      ticket_status: [
+        "novo",
+        "em_analise",
+        "aguardando_mei",
+        "resolvido",
+        "encerrado",
+      ],
+    },
   },
 } as const
