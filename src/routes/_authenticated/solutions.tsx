@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { listSolutions } from "@/lib/solutions.functions";
 import { ExternalLink } from "lucide-react";
+import { passoText } from "@/lib/render-helpers";
 
 export const Route = createFileRoute("/_authenticated/solutions")({
   head: () => ({ meta: [{ title: "Base de soluções — Sala do Empreendedor" }] }),
@@ -41,9 +42,10 @@ function SolutionsPage() {
               <p className="mt-1 line-clamp-3 text-sm text-muted-foreground">{s.descricao}</p>
               {Array.isArray(s.passo_a_passo) && s.passo_a_passo.length > 0 && (
                 <ol className="mt-3 list-decimal space-y-1 pl-5 text-sm text-muted-foreground">
-                  {(s.passo_a_passo as string[]).slice(0, 3).map((p, i) => (
-                    <li key={i}>{p}</li>
-                  ))}
+                  {(s.passo_a_passo as unknown[]).slice(0, 3).map((p, i) => {
+                    const txt = passoText(p);
+                    return txt ? <li key={i}>{txt}</li> : null;
+                  })}
                 </ol>
               )}
               {s.link_oficial && (
