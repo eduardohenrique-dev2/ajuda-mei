@@ -14,6 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
+      analytics_events: {
+        Row: {
+          criado_em: string
+          event_name: string
+          id: string
+          metadata: Json
+          session_id: string | null
+          url: string | null
+          user_id: string | null
+        }
+        Insert: {
+          criado_em?: string
+          event_name: string
+          id?: string
+          metadata?: Json
+          session_id?: string | null
+          url?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          criado_em?: string
+          event_name?: string
+          id?: string
+          metadata?: Json
+          session_id?: string | null
+          url?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       audit_log: {
         Row: {
           acao: string
@@ -118,31 +148,40 @@ export type Database = {
       profiles: {
         Row: {
           atualizado_em: string
+          cnae: string | null
           cnpj: string | null
+          cpf: string | null
           criado_em: string
           email: string | null
           id: string
           nome: string
+          notificacoes: boolean
           status: Database["public"]["Enums"]["mei_status"]
           telefone: string | null
         }
         Insert: {
           atualizado_em?: string
+          cnae?: string | null
           cnpj?: string | null
+          cpf?: string | null
           criado_em?: string
           email?: string | null
           id: string
           nome: string
+          notificacoes?: boolean
           status?: Database["public"]["Enums"]["mei_status"]
           telefone?: string | null
         }
         Update: {
           atualizado_em?: string
+          cnae?: string | null
           cnpj?: string | null
+          cpf?: string | null
           criado_em?: string
           email?: string | null
           id?: string
           nome?: string
+          notificacoes?: boolean
           status?: Database["public"]["Enums"]["mei_status"]
           telefone?: string | null
         }
@@ -380,6 +419,7 @@ export type Database = {
       escalate_stale_tickets: { Args: never; Returns: Json }
       generate_protocolo: { Args: never; Returns: string }
       get_analytics: { Args: never; Returns: Json }
+      get_event_stats: { Args: { _days?: number }; Returns: Json }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
