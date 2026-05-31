@@ -111,6 +111,12 @@ function AuthenticatedLayout() {
     setMobileOpen(false);
   }, [pathname]);
 
+  // Skeleton fullscreen enquanto auth hidrata, ou enquanto o redirect dispara.
+  if (status === "loading" || !user) {
+    return <FullPageLoader label="Verificando sua sessão..." />;
+  }
+
+
   const logout = async () => {
     await supabase.auth.signOut();
     navigate({ to: "/", replace: true });
