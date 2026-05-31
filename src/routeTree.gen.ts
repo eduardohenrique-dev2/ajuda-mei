@@ -22,6 +22,7 @@ import { Route as AuthenticatedTicketsIdRouteImport } from './routes/_authentica
 import { Route as AuthenticatedStaffTicketsRouteImport } from './routes/_authenticated/staff.tickets'
 import { Route as AuthenticatedStaffSolutionsRouteImport } from './routes/_authenticated/staff.solutions'
 import { Route as AuthenticatedStaffSectorsRouteImport } from './routes/_authenticated/staff.sectors'
+import { Route as AuthenticatedStaffAuditRouteImport } from './routes/_authenticated/staff.audit'
 import { Route as AuthenticatedStaffAnalyticsRouteImport } from './routes/_authenticated/staff.analytics'
 import { Route as AuthenticatedStaffTicketsIdRouteImport } from './routes/_authenticated/staff.tickets.$id'
 
@@ -92,6 +93,11 @@ const AuthenticatedStaffSectorsRoute =
     path: '/sectors',
     getParentRoute: () => AuthenticatedStaffRoute,
   } as any)
+const AuthenticatedStaffAuditRoute = AuthenticatedStaffAuditRouteImport.update({
+  id: '/audit',
+  path: '/audit',
+  getParentRoute: () => AuthenticatedStaffRoute,
+} as any)
 const AuthenticatedStaffAnalyticsRoute =
   AuthenticatedStaffAnalyticsRouteImport.update({
     id: '/analytics',
@@ -115,6 +121,7 @@ export interface FileRoutesByFullPath {
   '/staff': typeof AuthenticatedStaffRouteWithChildren
   '/tickets': typeof AuthenticatedTicketsRouteWithChildren
   '/staff/analytics': typeof AuthenticatedStaffAnalyticsRoute
+  '/staff/audit': typeof AuthenticatedStaffAuditRoute
   '/staff/sectors': typeof AuthenticatedStaffSectorsRoute
   '/staff/solutions': typeof AuthenticatedStaffSolutionsRoute
   '/staff/tickets': typeof AuthenticatedStaffTicketsRouteWithChildren
@@ -131,6 +138,7 @@ export interface FileRoutesByTo {
   '/staff': typeof AuthenticatedStaffRouteWithChildren
   '/tickets': typeof AuthenticatedTicketsRouteWithChildren
   '/staff/analytics': typeof AuthenticatedStaffAnalyticsRoute
+  '/staff/audit': typeof AuthenticatedStaffAuditRoute
   '/staff/sectors': typeof AuthenticatedStaffSectorsRoute
   '/staff/solutions': typeof AuthenticatedStaffSolutionsRoute
   '/staff/tickets': typeof AuthenticatedStaffTicketsRouteWithChildren
@@ -149,6 +157,7 @@ export interface FileRoutesById {
   '/_authenticated/staff': typeof AuthenticatedStaffRouteWithChildren
   '/_authenticated/tickets': typeof AuthenticatedTicketsRouteWithChildren
   '/_authenticated/staff/analytics': typeof AuthenticatedStaffAnalyticsRoute
+  '/_authenticated/staff/audit': typeof AuthenticatedStaffAuditRoute
   '/_authenticated/staff/sectors': typeof AuthenticatedStaffSectorsRoute
   '/_authenticated/staff/solutions': typeof AuthenticatedStaffSolutionsRoute
   '/_authenticated/staff/tickets': typeof AuthenticatedStaffTicketsRouteWithChildren
@@ -167,6 +176,7 @@ export interface FileRouteTypes {
     | '/staff'
     | '/tickets'
     | '/staff/analytics'
+    | '/staff/audit'
     | '/staff/sectors'
     | '/staff/solutions'
     | '/staff/tickets'
@@ -183,6 +193,7 @@ export interface FileRouteTypes {
     | '/staff'
     | '/tickets'
     | '/staff/analytics'
+    | '/staff/audit'
     | '/staff/sectors'
     | '/staff/solutions'
     | '/staff/tickets'
@@ -200,6 +211,7 @@ export interface FileRouteTypes {
     | '/_authenticated/staff'
     | '/_authenticated/tickets'
     | '/_authenticated/staff/analytics'
+    | '/_authenticated/staff/audit'
     | '/_authenticated/staff/sectors'
     | '/_authenticated/staff/solutions'
     | '/_authenticated/staff/tickets'
@@ -307,6 +319,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedStaffSectorsRouteImport
       parentRoute: typeof AuthenticatedStaffRoute
     }
+    '/_authenticated/staff/audit': {
+      id: '/_authenticated/staff/audit'
+      path: '/audit'
+      fullPath: '/staff/audit'
+      preLoaderRoute: typeof AuthenticatedStaffAuditRouteImport
+      parentRoute: typeof AuthenticatedStaffRoute
+    }
     '/_authenticated/staff/analytics': {
       id: '/_authenticated/staff/analytics'
       path: '/analytics'
@@ -340,6 +359,7 @@ const AuthenticatedStaffTicketsRouteWithChildren =
 
 interface AuthenticatedStaffRouteChildren {
   AuthenticatedStaffAnalyticsRoute: typeof AuthenticatedStaffAnalyticsRoute
+  AuthenticatedStaffAuditRoute: typeof AuthenticatedStaffAuditRoute
   AuthenticatedStaffSectorsRoute: typeof AuthenticatedStaffSectorsRoute
   AuthenticatedStaffSolutionsRoute: typeof AuthenticatedStaffSolutionsRoute
   AuthenticatedStaffTicketsRoute: typeof AuthenticatedStaffTicketsRouteWithChildren
@@ -347,6 +367,7 @@ interface AuthenticatedStaffRouteChildren {
 
 const AuthenticatedStaffRouteChildren: AuthenticatedStaffRouteChildren = {
   AuthenticatedStaffAnalyticsRoute: AuthenticatedStaffAnalyticsRoute,
+  AuthenticatedStaffAuditRoute: AuthenticatedStaffAuditRoute,
   AuthenticatedStaffSectorsRoute: AuthenticatedStaffSectorsRoute,
   AuthenticatedStaffSolutionsRoute: AuthenticatedStaffSolutionsRoute,
   AuthenticatedStaffTicketsRoute: AuthenticatedStaffTicketsRouteWithChildren,

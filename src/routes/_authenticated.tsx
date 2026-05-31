@@ -2,7 +2,7 @@ import { createFileRoute, Outlet, redirect, Link, useNavigate, useRouterState } 
 import { useAuth } from "@/lib/auth-context";
 import { useMyRoles } from "@/lib/use-roles";
 import { supabase } from "@/integrations/supabase/client";
-import { LayoutDashboard, Ticket, BookOpen, LogOut, Building2, Inbox, BarChart3, ShieldCheck, User, MapPin } from "lucide-react";
+import { LayoutDashboard, Ticket, BookOpen, LogOut, Building2, Inbox, BarChart3, ShieldCheck, User, MapPin, FileSearch } from "lucide-react";
 import { ChatWidget } from "@/components/chat/ChatWidget";
 import { Button } from "@/components/ui/button";
 
@@ -69,6 +69,10 @@ function AuthenticatedLayout() {
   const pathname = useRouterState({ select: s => s.location.pathname });
   const { data: rolesData } = useMyRoles();
   const isStaff = !!rolesData?.isStaff;
+  const isAdmin = !!rolesData?.isAdmin;
+  const staffNavWithAdmin = isAdmin
+    ? [...staffNav, { to: "/staff/audit", label: "Auditoria LGPD", icon: FileSearch }]
+    : staffNav;
 
   const logout = async () => {
     await supabase.auth.signOut();
@@ -85,7 +89,7 @@ function AuthenticatedLayout() {
 
         <div className="mt-4">
           <NavList items={meiNav} pathname={pathname} />
-          {isStaff && <NavList items={staffNav} pathname={pathname} label="Atendimento" />}
+          {isStaff && <NavList items={staffNavWithAdmin} pathname={pathname} label="Atendimento" />}
         </div>
 
         <div className="mt-auto rounded-lg border border-sidebar-border bg-card/40 p-3">
