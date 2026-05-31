@@ -44,7 +44,7 @@ function ResetPasswordPage() {
   };
 
   return (
-    <div className="grid min-h-screen place-items-center bg-background px-4">
+    <div className="grid min-h-dvh place-items-center bg-background px-4">
       <div className="w-full max-w-sm rounded-xl border border-border bg-card p-6 shadow-sm">
         <Link to="/login" className="text-sm text-muted-foreground hover:text-foreground">← Login</Link>
         <h1 className="mt-3 text-2xl font-semibold tracking-tight">Definir nova senha</h1>
