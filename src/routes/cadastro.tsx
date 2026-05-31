@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { PasswordInput } from "@/components/ui/password-input";
 import { toast } from "sonner";
 import { useAuth } from "@/lib/auth-context";
 
@@ -85,7 +86,7 @@ function SignupPage() {
           </div>
           <div className="space-y-2">
             <Label htmlFor="password">Senha (mín. 6 caracteres)</Label>
-            <Input id="password" type="password" autoComplete="new-password" required minLength={6}
+            <PasswordInput id="password" autoComplete="new-password" required minLength={6}
               value={password} onChange={e => setPassword(e.target.value)} />
           </div>
           <Button type="submit" className="w-full" disabled={loading}>
