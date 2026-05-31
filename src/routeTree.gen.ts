@@ -15,6 +15,7 @@ import { Route as EsqueciSenhaRouteImport } from './routes/esqueci-senha'
 import { Route as CadastroRouteImport } from './routes/cadastro'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as DocsApiRouteImport } from './routes/docs.api'
 import { Route as AuthenticatedTicketsRouteImport } from './routes/_authenticated/tickets'
 import { Route as AuthenticatedStaffRouteImport } from './routes/_authenticated/staff'
 import { Route as AuthenticatedSolutionsRouteImport } from './routes/_authenticated/solutions'
@@ -57,6 +58,11 @@ const AuthenticatedRoute = AuthenticatedRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsApiRoute = DocsApiRouteImport.update({
+  id: '/docs/api',
+  path: '/docs/api',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedTicketsRoute = AuthenticatedTicketsRouteImport.update({
@@ -146,6 +152,7 @@ export interface FileRoutesByFullPath {
   '/solutions': typeof AuthenticatedSolutionsRoute
   '/staff': typeof AuthenticatedStaffRouteWithChildren
   '/tickets': typeof AuthenticatedTicketsRouteWithChildren
+  '/docs/api': typeof DocsApiRoute
   '/staff/analytics': typeof AuthenticatedStaffAnalyticsRoute
   '/staff/audit': typeof AuthenticatedStaffAuditRoute
   '/staff/sectors': typeof AuthenticatedStaffSectorsRoute
@@ -167,6 +174,7 @@ export interface FileRoutesByTo {
   '/solutions': typeof AuthenticatedSolutionsRoute
   '/staff': typeof AuthenticatedStaffRouteWithChildren
   '/tickets': typeof AuthenticatedTicketsRouteWithChildren
+  '/docs/api': typeof DocsApiRoute
   '/staff/analytics': typeof AuthenticatedStaffAnalyticsRoute
   '/staff/audit': typeof AuthenticatedStaffAuditRoute
   '/staff/sectors': typeof AuthenticatedStaffSectorsRoute
@@ -190,6 +198,7 @@ export interface FileRoutesById {
   '/_authenticated/solutions': typeof AuthenticatedSolutionsRoute
   '/_authenticated/staff': typeof AuthenticatedStaffRouteWithChildren
   '/_authenticated/tickets': typeof AuthenticatedTicketsRouteWithChildren
+  '/docs/api': typeof DocsApiRoute
   '/_authenticated/staff/analytics': typeof AuthenticatedStaffAnalyticsRoute
   '/_authenticated/staff/audit': typeof AuthenticatedStaffAuditRoute
   '/_authenticated/staff/sectors': typeof AuthenticatedStaffSectorsRoute
@@ -213,6 +222,7 @@ export interface FileRouteTypes {
     | '/solutions'
     | '/staff'
     | '/tickets'
+    | '/docs/api'
     | '/staff/analytics'
     | '/staff/audit'
     | '/staff/sectors'
@@ -234,6 +244,7 @@ export interface FileRouteTypes {
     | '/solutions'
     | '/staff'
     | '/tickets'
+    | '/docs/api'
     | '/staff/analytics'
     | '/staff/audit'
     | '/staff/sectors'
@@ -256,6 +267,7 @@ export interface FileRouteTypes {
     | '/_authenticated/solutions'
     | '/_authenticated/staff'
     | '/_authenticated/tickets'
+    | '/docs/api'
     | '/_authenticated/staff/analytics'
     | '/_authenticated/staff/audit'
     | '/_authenticated/staff/sectors'
@@ -274,6 +286,7 @@ export interface RootRouteChildren {
   EsqueciSenhaRoute: typeof EsqueciSenhaRoute
   LoginRoute: typeof LoginRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
+  DocsApiRoute: typeof DocsApiRoute
   ApiPublicHealthRoute: typeof ApiPublicHealthRoute
   ApiPublicMetricsRoute: typeof ApiPublicMetricsRoute
 }
@@ -320,6 +333,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/api': {
+      id: '/docs/api'
+      path: '/docs/api'
+      fullPath: '/docs/api'
+      preLoaderRoute: typeof DocsApiRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/tickets': {
@@ -494,9 +514,20 @@ const rootRouteChildren: RootRouteChildren = {
   EsqueciSenhaRoute: EsqueciSenhaRoute,
   LoginRoute: LoginRoute,
   ResetPasswordRoute: ResetPasswordRoute,
+  DocsApiRoute: DocsApiRoute,
   ApiPublicHealthRoute: ApiPublicHealthRoute,
   ApiPublicMetricsRoute: ApiPublicMetricsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
