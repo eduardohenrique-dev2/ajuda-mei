@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { PasswordInput } from "@/components/ui/password-input";
 import { toast } from "sonner";
 import { useAuth } from "@/lib/auth-context";
 import { MailWarning } from "lucide-react";
@@ -70,8 +71,13 @@ function LoginPage() {
             <Input id="email" type="email" autoComplete="email" required value={email} onChange={e => setEmail(e.target.value)} />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="password">Senha</Label>
-            <Input id="password" type="password" autoComplete="current-password" required value={password} onChange={e => setPassword(e.target.value)} />
+            <div className="flex items-center justify-between">
+              <Label htmlFor="password">Senha</Label>
+              <Link to="/esqueci-senha" className="text-xs text-primary hover:underline">
+                Esqueci minha senha
+              </Link>
+            </div>
+            <PasswordInput id="password" autoComplete="current-password" required value={password} onChange={e => setPassword(e.target.value)} />
           </div>
           <Button type="submit" className="w-full" disabled={loading}>
             {loading ? "Entrando..." : "Entrar"}
