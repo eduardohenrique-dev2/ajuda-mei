@@ -104,9 +104,6 @@ function AuthenticatedLayout() {
   const { data: rolesData } = useMyRoles();
   const isStaff = !!rolesData?.isStaff;
   const isAdmin = !!rolesData?.isAdmin;
-  const staffNavWithAdmin: NavItem[] = isAdmin
-    ? [...staffNav, { to: "/staff/audit", label: "Auditoria LGPD", icon: FileSearch }]
-    : staffNav;
 
   const [mobileOpen, setMobileOpen] = useState(false);
 
