@@ -1,12 +1,12 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useState, type FormEvent } from "react";
+import { useState, useEffect, type FormEvent } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { useAuth } from "@/lib/auth-context";
-import { useEffect } from "react";
+import { MailWarning } from "lucide-react";
 
 export const Route = createFileRoute("/login")({
   head: () => ({ meta: [{ title: "Entrar — Sala do Empreendedor" }] }),
@@ -19,6 +19,8 @@ function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [needsConfirmation, setNeedsConfirmation] = useState(false);
+  const [resending, setResending] = useState(false);
 
   useEffect(() => {
     if (!authLoading && user) navigate({ to: "/dashboard", replace: true });
@@ -27,11 +29,32 @@ function LoginPage() {
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setNeedsConfirmation(false);
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     setLoading(false);
-    if (error) return toast.error(error.message);
+    if (error) {
+      const msg = error.message.toLowerCase();
+      if (msg.includes("not confirmed") || msg.includes("confirm")) {
+        setNeedsConfirmation(true);
+        return toast.error("E-mail ainda não confirmado. Verifique sua caixa de entrada.");
+      }
+      return toast.error("E-mail ou senha inválidos.");
+    }
     toast.success("Bem-vindo!");
     navigate({ to: "/dashboard", replace: true });
+  };
+
+  const resend = async () => {
+    if (!email) return toast.error("Informe seu e-mail acima.");
+    setResending(true);
+    const { error } = await supabase.auth.resend({
+      type: "signup",
+      email,
+      options: { emailRedirectTo: `${window.location.origin}/dashboard` },
+    });
+    setResending(false);
+    if (error) return toast.error(error.message);
+    toast.success("Reenviamos o link de confirmação.");
   };
 
   return (
@@ -54,6 +77,27 @@ function LoginPage() {
             {loading ? "Entrando..." : "Entrar"}
           </Button>
         </form>
+
+        {needsConfirmation && (
+          <div className="mt-4 rounded-md border border-warning/40 bg-warning/10 p-3 text-xs">
+            <div className="flex items-start gap-2">
+              <MailWarning className="mt-0.5 h-4 w-4 shrink-0 text-warning" />
+              <div className="space-y-2">
+                <p className="text-foreground">
+                  Confirme seu e-mail para acessar. Verifique a caixa de entrada e a pasta de spam.
+                </p>
+                <button
+                  type="button"
+                  onClick={resend}
+                  disabled={resending}
+                  className="font-medium text-primary hover:underline disabled:opacity-50"
+                >
+                  {resending ? "Reenviando..." : "Reenviar link de confirmação"}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         <p className="mt-4 text-center text-sm text-muted-foreground">
           Ainda não tem conta?{" "}

@@ -52,7 +52,7 @@ function SignupPage() {
     });
     setLoading(false);
     if (error) return toast.error(error.message);
-    toast.success("Cadastro realizado! Verifique seu e-mail para confirmar.");
+    toast.success("Cadastro criado! Enviamos um link de confirmação para " + email, { duration: 6000 });
     navigate({ to: "/login", replace: true });
   };
 
