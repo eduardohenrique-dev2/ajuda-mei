@@ -46,7 +46,7 @@ export const getTicketDetail = createServerFn({ method: "POST" })
 
     const { data: messages } = await context.supabase
       .from("ticket_messages")
-      .select("id, autor_id, papel, mensagem, interna, criado_em")
+      .select("id, autor_id, papel, mensagem, interna, anexos, criado_em")
       .eq("ticket_id", data.id)
       .order("criado_em", { ascending: true });
 
