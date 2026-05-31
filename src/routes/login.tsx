@@ -23,6 +23,7 @@ function LoginPage() {
   const [needsConfirmation, setNeedsConfirmation] = useState(false);
   const [resending, setResending] = useState(false);
 
+  // Redireciona apenas APÓS hidratação concluída — evita loop login↔dashboard.
   useEffect(() => {
     if (!authLoading && user) navigate({ to: "/dashboard", replace: true });
   }, [user, authLoading, navigate]);
@@ -42,7 +43,8 @@ function LoginPage() {
       return toast.error("E-mail ou senha inválidos.");
     }
     toast.success("Bem-vindo!");
-    navigate({ to: "/dashboard", replace: true });
+    // O useEffect acima fará o redirect quando o AuthProvider hidratar o user.
+    // Não navegar aqui evita corrida entre router.invalidate() e o redirect.
   };
 
   const resend = async () => {

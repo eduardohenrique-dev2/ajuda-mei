@@ -1,4 +1,4 @@
-import { createFileRoute, Outlet, redirect, Link, useNavigate, useRouterState } from "@tanstack/react-router";
+import { createFileRoute, Outlet, Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useEffect, useState, type ComponentType } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { useMyRoles } from "@/lib/use-roles";
@@ -11,14 +11,12 @@ import { ChatWidget } from "@/components/chat/ChatWidget";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { DemoBanner } from "@/components/layout/DemoBanner";
+import { FullPageLoader } from "@/components/layout/FullPageLoader";
 
 export const Route = createFileRoute("/_authenticated")({
-  beforeLoad: async () => {
-    const { data, error } = await supabase.auth.getUser();
-    if (error || !data.user) {
-      throw redirect({ to: "/login" });
-    }
-  },
+  // Auth is gated client-side via useAuth() (status-aware, hydration-safe).
+  // Never throw redirect() in beforeLoad based on a stale token — it caused
+  // a dashboard ↔ login oscillation when the session hadn't hydrated yet.
   component: AuthenticatedLayout,
 });
 
@@ -84,9 +82,21 @@ function NavList({
 }
 
 function AuthenticatedLayout() {
-  const { user } = useAuth();
+  const { user, status } = useAuth();
   const navigate = useNavigate();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+
+  // Redireciona APENAS depois que a hidratação terminou.
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      navigate({
+        to: "/login",
+        search: { redirect: pathname } as never,
+        replace: true,
+      });
+    }
+  }, [status, navigate, pathname]);
+
   const { data: rolesData } = useMyRoles();
   const isStaff = !!rolesData?.isStaff;
   const isAdmin = !!rolesData?.isAdmin;
@@ -100,6 +110,12 @@ function AuthenticatedLayout() {
   useEffect(() => {
     setMobileOpen(false);
   }, [pathname]);
+
+  // Skeleton fullscreen enquanto auth hidrata, ou enquanto o redirect dispara.
+  if (status === "loading" || !user) {
+    return <FullPageLoader label="Verificando sua sessão..." />;
+  }
+
 
   const logout = async () => {
     await supabase.auth.signOut();
