@@ -36,19 +36,19 @@ const STATUS_LABEL: Record<string, string> = {
   resolvido: "Resolvidos", encerrado: "Encerrados",
 };
 const STATUS_COLOR: Record<string, string> = {
-  novo: "hsl(var(--info, 210 90% 55%))",
-  em_analise: "hsl(var(--warning, 38 92% 50%))",
-  aguardando_mei: "hsl(var(--warning, 38 92% 50%) / 0.7)",
-  resolvido: "hsl(var(--primary))",
-  encerrado: "hsl(var(--muted-foreground))",
+  novo: "var(--info)",
+  em_analise: "var(--warning)",
+  aguardando_mei: "color-mix(in oklab, var(--warning) 70%, transparent)",
+  resolvido: "var(--primary)",
+  encerrado: "var(--muted-foreground)",
 };
 const PIE_COLORS = [
-  "hsl(var(--primary))",
-  "hsl(var(--info, 210 90% 55%))",
-  "hsl(var(--warning, 38 92% 50%))",
-  "hsl(var(--destructive))",
-  "hsl(var(--muted-foreground))",
-  "hsl(var(--primary) / 0.6)",
+  "var(--primary)",
+  "var(--info)",
+  "var(--warning)",
+  "var(--destructive)",
+  "var(--muted-foreground)",
+  "color-mix(in oklab, var(--primary) 60%, transparent)",
 ];
 
 function toLocalInput(d: Date) {
@@ -195,13 +195,13 @@ function BIPage() {
             ) : (
               <ResponsiveContainer width="100%" height={280}>
                 <LineChart data={data!.serie_temporal} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                  <XAxis dataKey="dia" stroke="hsl(var(--muted-foreground))" fontSize={11} />
-                  <YAxis stroke="hsl(var(--muted-foreground))" fontSize={11} allowDecimals={false} />
-                  <Tooltip contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 12 }} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
+                  <XAxis dataKey="dia" stroke="var(--muted-foreground)" fontSize={11} />
+                  <YAxis stroke="var(--muted-foreground)" fontSize={11} allowDecimals={false} />
+                  <Tooltip contentStyle={{ background: "var(--card)", border: "1px solid var(--border)", borderRadius: 8, fontSize: 12 }} />
                   <Legend wrapperStyle={{ fontSize: 12 }} />
-                  <Line type="monotone" dataKey="criados" name="Criados" stroke="hsl(var(--primary))" strokeWidth={2} dot={false} />
-                  <Line type="monotone" dataKey="resolvidos" name="Resolvidos" stroke="hsl(var(--info, 210 90% 55%))" strokeWidth={2} dot={false} />
+                  <Line type="monotone" dataKey="criados" name="Criados" stroke="var(--primary)" strokeWidth={2} dot={false} />
+                  <Line type="monotone" dataKey="resolvidos" name="Resolvidos" stroke="var(--info)" strokeWidth={2} dot={false} />
                 </LineChart>
               </ResponsiveContainer>
             )}
@@ -214,13 +214,13 @@ function BIPage() {
               ) : (
                 <ResponsiveContainer width="100%" height={280}>
                   <BarChart data={data!.por_categoria} layout="vertical" margin={{ top: 5, right: 20, left: 0, bottom: 0 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                    <XAxis type="number" stroke="hsl(var(--muted-foreground))" fontSize={11} allowDecimals={false} />
-                    <YAxis type="category" dataKey="categoria" stroke="hsl(var(--muted-foreground))" fontSize={10}
+                    <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
+                    <XAxis type="number" stroke="var(--muted-foreground)" fontSize={11} allowDecimals={false} />
+                    <YAxis type="category" dataKey="categoria" stroke="var(--muted-foreground)" fontSize={10}
                       width={110}
                       tickFormatter={(v: string) => v.replace(/_/g, " ")} />
-                    <Tooltip contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 12 }} />
-                    <Bar dataKey="total" fill="hsl(var(--primary))" radius={[0, 4, 4, 0]} />
+                    <Tooltip contentStyle={{ background: "var(--card)", border: "1px solid var(--border)", borderRadius: 8, fontSize: 12 }} />
+                    <Bar dataKey="total" fill="var(--primary)" radius={[0, 4, 4, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
               )}
@@ -237,7 +237,7 @@ function BIPage() {
                         <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />
                       ))}
                     </Pie>
-                    <Tooltip contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 12 }} />
+                    <Tooltip contentStyle={{ background: "var(--card)", border: "1px solid var(--border)", borderRadius: 8, fontSize: 12 }} />
                     <Legend wrapperStyle={{ fontSize: 11 }} />
                   </PieChart>
                 </ResponsiveContainer>
@@ -258,10 +258,10 @@ function BIPage() {
             ) : (
               <ResponsiveContainer width="100%" height={300}>
                 <BarChart data={data!.status_por_dia} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                  <XAxis dataKey="dia" stroke="hsl(var(--muted-foreground))" fontSize={11} />
-                  <YAxis stroke="hsl(var(--muted-foreground))" fontSize={11} allowDecimals={false} />
-                  <Tooltip contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 12 }} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
+                  <XAxis dataKey="dia" stroke="var(--muted-foreground)" fontSize={11} />
+                  <YAxis stroke="var(--muted-foreground)" fontSize={11} allowDecimals={false} />
+                  <Tooltip contentStyle={{ background: "var(--card)", border: "1px solid var(--border)", borderRadius: 8, fontSize: 12 }} />
                   <Legend wrapperStyle={{ fontSize: 11 }} />
                   {STATUSES.map((s) => (
                     <Bar key={s} dataKey={s} stackId="a" name={STATUS_LABEL[s]} fill={STATUS_COLOR[s]} />
@@ -300,11 +300,11 @@ function BIPage() {
                   data={Object.entries(data!.eventos).map(([event, total]) => ({ event, total })).sort((a, b) => b.total - a.total)}
                   layout="vertical" margin={{ top: 5, right: 20, left: 0, bottom: 0 }}
                 >
-                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                  <XAxis type="number" stroke="hsl(var(--muted-foreground))" fontSize={11} allowDecimals={false} />
-                  <YAxis type="category" dataKey="event" stroke="hsl(var(--muted-foreground))" fontSize={10} width={150} />
-                  <Tooltip contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 12 }} />
-                  <Bar dataKey="total" fill="hsl(var(--info, 210 90% 55%))" radius={[0, 4, 4, 0]} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
+                  <XAxis type="number" stroke="var(--muted-foreground)" fontSize={11} allowDecimals={false} />
+                  <YAxis type="category" dataKey="event" stroke="var(--muted-foreground)" fontSize={10} width={150} />
+                  <Tooltip contentStyle={{ background: "var(--card)", border: "1px solid var(--border)", borderRadius: 8, fontSize: 12 }} />
+                  <Bar dataKey="total" fill="var(--info)" radius={[0, 4, 4, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             )}
