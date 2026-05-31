@@ -15,7 +15,7 @@ export const Route = createFileRoute("/")({
 
 function Landing() {
   return (
-    <div className="min-h-screen">
+    <div className="min-h-dvh">
       <header className="border-b border-border/60 bg-card/40 backdrop-blur supports-[backdrop-filter]:bg-card/30">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
           <Link to="/" className="flex items-center gap-2">
@@ -35,7 +35,7 @@ function Landing() {
         </div>
       </header>
 
-      <main>
+      <main id="main-content" tabIndex={-1} className="focus:outline-none">
         <section className="mx-auto max-w-6xl px-6 py-20">
           <div className="grid gap-10 md:grid-cols-2 md:items-center">
             <div>

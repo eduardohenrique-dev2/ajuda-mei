@@ -59,7 +59,7 @@ function LoginPage() {
   };
 
   return (
-    <div className="grid min-h-screen place-items-center bg-background px-4">
+    <div className="grid min-h-dvh place-items-center bg-background px-4">
       <div className="w-full max-w-sm rounded-xl border border-border bg-card p-6 shadow-sm">
         <Link to="/" className="text-sm text-muted-foreground hover:text-foreground">← Início</Link>
         <h1 className="mt-3 text-2xl font-semibold tracking-tight">Entrar</h1>
@@ -79,7 +79,7 @@ function LoginPage() {
             </div>
             <PasswordInput id="password" autoComplete="current-password" required value={password} onChange={e => setPassword(e.target.value)} />
           </div>
-          <Button type="submit" className="w-full" disabled={loading}>
+          <Button type="submit" className="min-h-11 w-full" disabled={loading}>
             {loading ? "Entrando..." : "Entrar"}
           </Button>
         </form>
