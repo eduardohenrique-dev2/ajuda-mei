@@ -22,6 +22,7 @@ import { Route as AuthenticatedTicketsRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedStaffRouteImport } from './routes/_authenticated/staff'
 import { Route as AuthenticatedSolutionsRouteImport } from './routes/_authenticated/solutions'
 import { Route as AuthenticatedPerfilRouteImport } from './routes/_authenticated/perfil'
+import { Route as AuthenticatedDocumentosRouteImport } from './routes/_authenticated/documentos'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as ApiPublicMetricsRouteImport } from './routes/api/public/metrics'
 import { Route as ApiPublicHealthRouteImport } from './routes/api/public/health'
@@ -97,6 +98,11 @@ const AuthenticatedPerfilRoute = AuthenticatedPerfilRouteImport.update({
   path: '/perfil',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedDocumentosRoute = AuthenticatedDocumentosRouteImport.update({
+  id: '/documentos',
+  path: '/documentos',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -162,6 +168,7 @@ export interface FileRoutesByFullPath {
   '/setores': typeof SetoresRoute
   '/solucoes': typeof SolucoesRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/documentos': typeof AuthenticatedDocumentosRoute
   '/perfil': typeof AuthenticatedPerfilRoute
   '/solutions': typeof AuthenticatedSolutionsRoute
   '/staff': typeof AuthenticatedStaffRouteWithChildren
@@ -186,6 +193,7 @@ export interface FileRoutesByTo {
   '/setores': typeof SetoresRoute
   '/solucoes': typeof SolucoesRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/documentos': typeof AuthenticatedDocumentosRoute
   '/perfil': typeof AuthenticatedPerfilRoute
   '/solutions': typeof AuthenticatedSolutionsRoute
   '/staff': typeof AuthenticatedStaffRouteWithChildren
@@ -212,6 +220,7 @@ export interface FileRoutesById {
   '/setores': typeof SetoresRoute
   '/solucoes': typeof SolucoesRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/documentos': typeof AuthenticatedDocumentosRoute
   '/_authenticated/perfil': typeof AuthenticatedPerfilRoute
   '/_authenticated/solutions': typeof AuthenticatedSolutionsRoute
   '/_authenticated/staff': typeof AuthenticatedStaffRouteWithChildren
@@ -238,6 +247,7 @@ export interface FileRouteTypes {
     | '/setores'
     | '/solucoes'
     | '/dashboard'
+    | '/documentos'
     | '/perfil'
     | '/solutions'
     | '/staff'
@@ -262,6 +272,7 @@ export interface FileRouteTypes {
     | '/setores'
     | '/solucoes'
     | '/dashboard'
+    | '/documentos'
     | '/perfil'
     | '/solutions'
     | '/staff'
@@ -287,6 +298,7 @@ export interface FileRouteTypes {
     | '/setores'
     | '/solucoes'
     | '/_authenticated/dashboard'
+    | '/_authenticated/documentos'
     | '/_authenticated/perfil'
     | '/_authenticated/solutions'
     | '/_authenticated/staff'
@@ -410,6 +422,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPerfilRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/documentos': {
+      id: '/_authenticated/documentos'
+      path: '/documentos'
+      fullPath: '/documentos'
+      preLoaderRoute: typeof AuthenticatedDocumentosRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/dashboard': {
       id: '/_authenticated/dashboard'
       path: '/dashboard'
@@ -529,6 +548,7 @@ const AuthenticatedTicketsRouteWithChildren =
 
 interface AuthenticatedRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedDocumentosRoute: typeof AuthenticatedDocumentosRoute
   AuthenticatedPerfilRoute: typeof AuthenticatedPerfilRoute
   AuthenticatedSolutionsRoute: typeof AuthenticatedSolutionsRoute
   AuthenticatedStaffRoute: typeof AuthenticatedStaffRouteWithChildren
@@ -537,6 +557,7 @@ interface AuthenticatedRouteChildren {
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedDocumentosRoute: AuthenticatedDocumentosRoute,
   AuthenticatedPerfilRoute: AuthenticatedPerfilRoute,
   AuthenticatedSolutionsRoute: AuthenticatedSolutionsRoute,
   AuthenticatedStaffRoute: AuthenticatedStaffRouteWithChildren,
