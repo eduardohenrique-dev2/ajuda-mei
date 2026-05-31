@@ -21,8 +21,8 @@ export const listMyTickets = createServerFn({ method: "GET" })
   });
 
 const createTicketInput = z.object({
-  titulo: z.string().trim().min(3).max(200),
-  descricao: z.string().trim().min(5).max(5000),
+  titulo: z.string().trim().min(1).max(200),
+  descricao: z.string().trim().min(1).max(5000),
   categoria: CATEGORIAS.default("outros"),
   canal: z.enum(["web","whatsapp","presencial"]).default("web"),
 });
