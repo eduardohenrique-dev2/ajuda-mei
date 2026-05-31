@@ -143,7 +143,31 @@ function TicketDetailPage() {
                 <span className="ml-auto">{new Date(m.criado_em).toLocaleString("pt-BR")}</span>
               </div>
               <p className="whitespace-pre-wrap">{m.mensagem}</p>
+              <AttachmentList anexos={(m.anexos as Anexo[]) ?? []} />
             </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="rounded-xl border border-border bg-card p-4 space-y-3">
+        <Textarea
+          value={message}
+          onChange={e => setMessage(e.target.value)}
+          placeholder="Escreva a resposta para o MEI..."
+          rows={4}
+          maxLength={5000}
+        />
+        <AttachmentPicker ticketId={id} anexos={anexos} onChange={setAnexos} />
+        <div className="flex items-center justify-between">
+          <label className="flex items-center gap-2 text-xs text-muted-foreground">
+            <input type="checkbox" checked={interna} onChange={e => setInterna(e.target.checked)} />
+            Nota interna (não visível para o MEI)
+          </label>
+          <Button onClick={sendReply} disabled={busy || (!message.trim() && anexos.length === 0)} size="sm">
+            Enviar resposta
+          </Button>
+        </div>
+      </div>
           ))}
         </div>
       </div>
