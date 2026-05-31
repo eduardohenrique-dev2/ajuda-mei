@@ -47,8 +47,12 @@ function TicketsPage() {
             <tbody>
               {tickets!.map(t => (
                 <tr key={t.id} className="border-t border-border hover:bg-card/40">
-                  <td className="px-4 py-3 font-mono text-xs">{t.protocolo}</td>
-                  <td className="px-4 py-3">{t.titulo}</td>
+                  <td className="px-4 py-3 font-mono text-xs">
+                    <Link to="/tickets/$id" params={{ id: t.id }} className="text-primary hover:underline">{t.protocolo}</Link>
+                  </td>
+                  <td className="px-4 py-3">
+                    <Link to="/tickets/$id" params={{ id: t.id }} className="hover:underline">{t.titulo}</Link>
+                  </td>
                   <td className="px-4 py-3 text-muted-foreground">{t.categoria}</td>
                   <td className="px-4 py-3"><StatusBadge status={t.status} /></td>
                   <td className="px-4 py-3 text-muted-foreground">
